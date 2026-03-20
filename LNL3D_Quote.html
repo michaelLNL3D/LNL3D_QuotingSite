@@ -539,6 +539,36 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 .empty-state .empty-icon { font-size: 42px; margin-bottom: 12px; }
 .empty-state .empty-title { font-family: var(--font-head); font-size: 16px; color: var(--text2); margin-bottom: 6px; }
 .empty-state p { font-size: 13px; }
+
+/* ── Customer autocomplete ── */
+.ac-wrap { position: relative; }
+.ac-list {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: var(--rad); z-index: 300;
+  max-height: 180px; overflow-y: auto;
+}
+.ac-item {
+  padding: 8px 12px; font-size: 13px; cursor: pointer;
+  border-bottom: 1px solid var(--border);
+}
+.ac-item:last-child { border-bottom: none; }
+.ac-item:hover { background: var(--bg4); }
+.ac-item-name { font-weight: 500; }
+.ac-item-company { font-size: 11px; color: var(--text3); }
+
+/* ── Customer tab ── */
+.cust-toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; }
+.cust-name-link { color: var(--accent2); cursor: pointer; font-weight: 500; }
+.cust-name-link:hover { text-decoration: underline; }
+
+/* ── Status history in drawer ── */
+.history-item {
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.history-item:last-child { border-bottom: none; }
+.history-arrow { color: var(--text3); margin: 0 4px; }
 </style>
 </head>
 <body>
@@ -559,6 +589,9 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
     </button>
     <button class="nav-tab" onclick="showTab('log')" id="nav-log">
       <span class="tab-icon">≡</span> Quote Log
+    </button>
+    <button class="nav-tab" onclick="showTab('customers')" id="nav-customers">
+      <span class="tab-icon">◈</span> Customers
     </button>
     <button class="nav-tab" onclick="showTab('settings')" id="nav-settings">
       <span class="tab-icon">⊙</span> Settings
@@ -644,9 +677,11 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 
       <div class="form-section">◎ Customer Details</div>
       <div class="form-row form-row-3">
-        <div class="form-group">
+        <div class="form-group ac-wrap">
           <label class="form-label">Customer Name</label>
-          <input class="form-input" id="q-customer" placeholder="e.g. Acme Corp" oninput="calcQuote()">
+          <input class="form-input" id="q-customer" placeholder="e.g. Acme Corp" autocomplete="off"
+            oninput="calcQuote(); showCustomerAC(this.value)" onblur="setTimeout(hideCustomerAC, 150)">
+          <div class="ac-list hidden" id="customer-ac"></div>
         </div>
         <div class="form-group">
           <label class="form-label">Project Title</label>
@@ -933,6 +968,38 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 </main>
 
 <!-- ══════════════════════════════════════════════
+     CUSTOMERS
+══════════════════════════════════════════════ -->
+<main class="main hidden" id="tab-customers">
+  <div class="flex-between mb-16">
+    <div>
+      <h1 style="font-family:var(--font-head);font-size:22px;font-weight:800">Customers</h1>
+      <p style="color:var(--text2);font-size:13px;margin-top:3px">Contact list and quote history</p>
+    </div>
+    <button class="btn btn-primary" onclick="openCustomerModal()">+ Add Customer</button>
+  </div>
+  <div class="cust-toolbar">
+    <input class="form-input" id="cust-search" placeholder="Search name, company, email..." style="max-width:300px" oninput="renderCustomers()">
+  </div>
+  <div class="table-wrap" id="cust-table-wrap">
+    <table id="cust-table">
+      <thead>
+        <tr>
+          <th>Name</th><th>Company</th><th>Email</th><th>Phone</th>
+          <th class="td-center">Quotes</th><th class="td-right">Total Spent</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="cust-body"></tbody>
+    </table>
+  </div>
+  <div id="cust-empty" class="empty-state hidden">
+    <div class="empty-icon">◈</div>
+    <div class="empty-title">No customers yet</div>
+    <p>Add a customer manually or they'll be created automatically when you log a quote.</p>
+  </div>
+</main>
+
+<!-- ══════════════════════════════════════════════
      SETTINGS
 ══════════════════════════════════════════════ -->
 <main class="main hidden" id="tab-settings">
@@ -1057,6 +1124,7 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
   <div class="drawer-body" id="drawer-body"></div>
   <div class="drawer-footer">
     <button class="btn btn-primary btn-sm" onclick="drawerReload()">↩ Edit</button>
+    <button class="btn btn-ghost btn-sm" onclick="drawerDuplicate()">⧉ Duplicate</button>
     <button class="btn btn-ghost btn-sm" onclick="drawerPDF()">⬡ PDF</button>
     <button class="btn btn-danger btn-sm" style="margin-left:auto" onclick="drawerDelete()">✕ Delete</button>
   </div>
@@ -1091,6 +1159,76 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
       <button class="btn btn-ghost" onclick="closeModal('modal-update')">Cancel</button>
       <button class="btn btn-primary" onclick="confirmUpdateQuote()">Update</button>
     </div>
+  </div>
+</div>
+
+<!-- Status note modal -->
+<div class="modal-overlay" id="modal-status-note">
+  <div class="modal" style="min-width:420px;max-width:480px">
+    <div class="modal-title">Status Updated</div>
+    <div class="modal-sub" id="status-note-sub"></div>
+    <div class="form-group">
+      <label class="form-label">Note <span style="color:var(--text3);font-weight:400;text-transform:none">(optional)</span></label>
+      <textarea class="form-textarea" id="status-note-text" placeholder="e.g. Approved via email, waiting on payment..." rows="3"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="confirmStatusNote(false)">Skip</button>
+      <button class="btn btn-primary" onclick="confirmStatusNote(true)">Save Note</button>
+    </div>
+  </div>
+</div>
+
+<!-- Customer add/edit modal -->
+<div class="modal-overlay" id="modal-customer">
+  <div class="modal" style="min-width:500px">
+    <div class="modal-title" id="cust-modal-title">Add Customer</div>
+    <input type="hidden" id="cust-modal-id">
+    <div class="form-row form-row-2" style="gap:14px">
+      <div class="form-group">
+        <label class="form-label">Name *</label>
+        <input class="form-input" id="cust-modal-name" placeholder="Full name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Company</label>
+        <input class="form-input" id="cust-modal-company" placeholder="Company or org">
+      </div>
+    </div>
+    <div class="form-row form-row-2" style="gap:14px;margin-top:12px">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="cust-modal-email" type="email" placeholder="email@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone</label>
+        <input class="form-input" id="cust-modal-phone" placeholder="555-0100">
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:12px">
+      <label class="form-label">Notes</label>
+      <textarea class="form-textarea" id="cust-modal-notes" placeholder="Preferences, project types, context..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-customer')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCustomerModal()">Save Customer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Customer detail drawer -->
+<div class="drawer-backdrop" id="cust-drawer-backdrop" onclick="closeCustDrawer()"></div>
+<div class="drawer" id="cust-drawer">
+  <div class="drawer-header">
+    <div class="drawer-header-info">
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--text3);margin-bottom:4px" id="cd-company"></div>
+      <div style="font-family:var(--font-head);font-size:17px;font-weight:800;line-height:1.2" id="cd-name"></div>
+      <div style="margin-top:6px;display:flex;gap:12px;flex-wrap:wrap" id="cd-contact"></div>
+    </div>
+    <button class="drawer-close" onclick="closeCustDrawer()">✕</button>
+  </div>
+  <div class="drawer-body" id="cust-drawer-body"></div>
+  <div class="drawer-footer">
+    <button class="btn btn-primary btn-sm" onclick="editCustomerDrawer()">✎ Edit</button>
+    <button class="btn btn-danger btn-sm" style="margin-left:auto" onclick="deleteCustomerDrawer()">✕ Delete</button>
   </div>
 </div>
 
@@ -1144,19 +1282,31 @@ const DEFAULTS = {
 /* ═══════════════════════════════════════════════════════════════
    STATE
 ═══════════════════════════════════════════════════════════════ */
-let state = { settings: null, quotes: [] };
+let state = { settings: null, quotes: [], customers: [] };
 let currentEditSerial = null;
 
 async function loadState() {
-  // Settings always come from localStorage
+  // Settings: try server first, fall back to localStorage
   try {
-    const s = localStorage.getItem('lnl3d_settings');
-    state.settings = s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULTS.settings));
-    for (const [k,v] of Object.entries(DEFAULTS.settings)) {
-      if (state.settings[k] === undefined) state.settings[k] = v;
+    const res = await fetch('/api/settings');
+    if (res.ok) {
+      const serverSettings = await res.json();
+      if (serverSettings && Object.keys(serverSettings).length > 0) {
+        state.settings = serverSettings;
+      } else {
+        // Server file is empty — migrate from localStorage
+        const s = localStorage.getItem('lnl3d_settings');
+        state.settings = s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULTS.settings));
+        _persistSettings();
+      }
     }
   } catch(e) {
-    state.settings = JSON.parse(JSON.stringify(DEFAULTS.settings));
+    const s = localStorage.getItem('lnl3d_settings');
+    state.settings = s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULTS.settings));
+  }
+  // Merge any missing default keys
+  for (const [k,v] of Object.entries(DEFAULTS.settings)) {
+    if (state.settings[k] === undefined) state.settings[k] = v;
   }
 
   // Quotes: try server first, fall back to localStorage
@@ -1164,42 +1314,56 @@ async function loadState() {
     const res = await fetch('/api/quotes');
     if (res.ok) {
       const serverQuotes = await res.json();
-      // One-time migration: if server is empty but localStorage has quotes, push them up
       if (serverQuotes.length === 0) {
         const lsRaw = localStorage.getItem('lnl3d_quotes');
         const lsQuotes = lsRaw ? JSON.parse(lsRaw) : [];
-        if (lsQuotes.length > 0) {
-          state.quotes = lsQuotes;
-          _persistQuotes();
-          return;
-        }
+        if (lsQuotes.length > 0) { state.quotes = lsQuotes; _persistQuotes(); }
+        else state.quotes = [];
+      } else {
+        state.quotes = serverQuotes;
       }
-      state.quotes = serverQuotes;
-      return;
     }
-  } catch(e) { /* server not available */ }
-
-  // Fallback: localStorage
-  try {
-    const q = localStorage.getItem('lnl3d_quotes');
-    state.quotes = q ? JSON.parse(q) : [];
   } catch(e) {
-    state.quotes = [];
+    try { const q = localStorage.getItem('lnl3d_quotes'); state.quotes = q ? JSON.parse(q) : []; }
+    catch(e2) { state.quotes = []; }
+  }
+
+  // Customers: try server first, fall back to localStorage
+  try {
+    const res = await fetch('/api/customers');
+    if (res.ok) state.customers = await res.json();
+  } catch(e) {
+    try { const c = localStorage.getItem('lnl3d_customers'); state.customers = c ? JSON.parse(c) : []; }
+    catch(e2) { state.customers = []; }
   }
 }
 
 function _persistQuotes() {
-  // Write to server (fire-and-forget) + keep localStorage as cache
   localStorage.setItem('lnl3d_quotes', JSON.stringify(state.quotes));
   fetch('/api/quotes', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(state.quotes)
-  }).catch(() => {}); // silent if no server
+  }).catch(() => {});
+}
+
+function saveCustomers() {
+  localStorage.setItem('lnl3d_customers', JSON.stringify(state.customers));
+  fetch('/api/customers', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(state.customers)
+  }).catch(() => {});
+}
+
+function _persistSettings() {
+  localStorage.setItem('lnl3d_settings', JSON.stringify(state.settings));
+  fetch('/api/settings', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(state.settings)
+  }).catch(() => {});
 }
 
 function saveState() {
-  localStorage.setItem('lnl3d_settings', JSON.stringify(state.settings));
+  _persistSettings();
   _persistQuotes();
 }
 
@@ -1432,12 +1596,13 @@ function closeModal(id) { document.getElementById(id).classList.remove('open'); 
    TAB NAVIGATION
 ═══════════════════════════════════════════════════════════════ */
 function showTab(tab) {
-  ['dashboard','quote','log','settings'].forEach(t => {
+  ['dashboard','quote','log','customers','settings'].forEach(t => {
     document.getElementById('tab-'+t).classList.toggle('hidden', t!==tab);
     document.getElementById('nav-'+t).classList.toggle('active', t===tab);
   });
   if (tab==='dashboard') renderDashboard();
   if (tab==='log')       renderLog();
+  if (tab==='customers') renderCustomers();
   if (tab==='settings')  renderSettings();
 }
 
@@ -1644,6 +1809,7 @@ function confirmLogQuote() {
 
   state.quotes.push(entry);
   state.settings.next_serial = serial + 1;
+  ensureCustomer(q.customer);
   saveState();
 
   toast(`Quote #${fmtSerial(serial)} logged — ${q.customer}`);
@@ -1709,7 +1875,7 @@ function renderLog() {
       <td class="td-mono">${fmtSerial(q.serial)}</td>
       <td class="td-mono" style="font-size:11px">${q.quote_id||'—'}</td>
       <td style="white-space:nowrap;font-size:12px">${q.date||'—'}</td>
-      <td style="font-weight:500">${q.customer||'—'}${q.project?`<br><span style='font-size:11px;color:var(--text3)'>${q.project}</span>`:''}</td>
+      <td style="font-weight:500"><span class="cust-name-link" onclick="event.stopPropagation();openCustByName('${(q.customer||'').replace(/'/g,"\\'")}'">${q.customer||'—'}</span>${q.project?`<br><span style='font-size:11px;color:var(--text3)'>${q.project}</span>`:''}</td>
       <td style="color:var(--text2);font-size:12px">${q.description||'—'}</td>
       <td style="white-space:nowrap" onclick="event.stopPropagation()">${statusBadge(q.status, q.serial)}</td>
       <td class="td-center">${q.quantity||1}</td>
@@ -1722,6 +1888,7 @@ function renderLog() {
       <td onclick="event.stopPropagation()">
         <div style="display:flex;gap:4px">
           <button class="btn btn-ghost btn-sm" onclick="reloadQuote(${q.serial})">Reload</button>
+          <button class="btn btn-ghost btn-sm" onclick="duplicateQuote(${q.serial})">⧉ Dup</button>
           <button class="btn btn-ghost btn-sm" onclick="showLogPDF(${q.serial})">PDF</button>
           <button class="btn btn-danger btn-sm" onclick="deleteQuote(${q.serial})">✕</button>
         </div>
@@ -1850,6 +2017,18 @@ function showQuickView(serial) {
       <div class="drawer-section-label">Notes</div>
       <div style="font-size:12px;color:var(--text2);line-height:1.6;padding:4px 0">${q.notes}</div>
     </div>` : ''}
+    ${q.status_history && q.status_history.length > 0 ? `
+    <div class="drawer-section">
+      <div class="drawer-section-label">Status History</div>
+      ${q.status_history.map(h => `
+        <div class="history-item">
+          <span class="badge badge-${({Quoting:'quoting',Accepted:'accepted','In Progress':'progress',Complete:'complete',Declined:'declined'})[h.from]||'quoting'}" style="font-size:10px">${h.from}</span>
+          <span class="history-arrow">→</span>
+          <span class="badge badge-${({Quoting:'quoting',Accepted:'accepted','In Progress':'progress',Complete:'complete',Declined:'declined'})[h.to]||'quoting'}" style="font-size:10px">${h.to}</span>
+          <span style="color:var(--text3);font-size:11px;margin-left:6px">${new Date(h.at).toLocaleString()}</span>
+          ${h.note ? `<div style="color:var(--text2);font-size:11px;margin-top:3px;padding-left:2px">${h.note}</div>` : ''}
+        </div>`).join('')}
+    </div>` : ''}
     <div style="padding:14px 20px 0;font-size:11px;color:var(--text3)">
       Logged ${q.logged_at ? new Date(q.logged_at).toLocaleString() : '—'}
       ${q.updated_at ? '<br>Updated ' + new Date(q.updated_at).toLocaleString() : ''}
@@ -1865,9 +2044,279 @@ function closeDrawer() {
   document.getElementById('quote-drawer').classList.remove('open');
 }
 
-function drawerReload() { closeDrawer(); reloadQuote(drawerSerial); }
-function drawerPDF()    { closeDrawer(); showLogPDF(drawerSerial); }
-function drawerDelete() { closeDrawer(); deleteQuote(drawerSerial); }
+function drawerReload()     { closeDrawer(); reloadQuote(drawerSerial); }
+function drawerPDF()        { closeDrawer(); showLogPDF(drawerSerial); }
+function drawerDelete()     { closeDrawer(); deleteQuote(drawerSerial); }
+function drawerDuplicate()  { closeDrawer(); duplicateQuote(drawerSerial); }
+
+/* ═══════════════════════════════════════════════════════════════
+   DUPLICATE QUOTE
+═══════════════════════════════════════════════════════════════ */
+function duplicateQuote(serial) {
+  const q = state.quotes.find(x => x.serial === serial);
+  if (!q) return;
+  const today = new Date().toISOString().slice(0,10);
+  const expiry = new Date(); expiry.setDate(expiry.getDate()+30);
+  currentEditSerial = null;
+  setFormData({ ...q, date: today, expiry: expiry.toISOString().slice(0,10), status: 'Quoting', quoted_price: '' });
+  document.getElementById('quote-page-title').textContent = 'New Quote';
+  document.getElementById('quote-page-sub').textContent = `Duplicated from #${fmtSerial(serial)} — ${q.customer}`;
+  document.getElementById('quote-alert-area').innerHTML =
+    `<div class="alert alert-info">Duplicated from #${fmtSerial(serial)} · ${q.customer} — ${q.description}</div>`;
+  showTab('quote');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STATUS CHANGE WITH NOTE
+═══════════════════════════════════════════════════════════════ */
+let pendingStatusChange = null;
+
+function updateQuoteStatus(sel) {
+  const serial    = parseInt(sel.dataset.serial);
+  const newStatus = sel.value;
+  const q         = state.quotes.find(x => x.serial === serial);
+  if (!q) return;
+  const oldStatus = q.status;
+  if (oldStatus === newStatus) return;
+
+  // Stage the change and show note modal
+  pendingStatusChange = { serial, oldStatus, newStatus };
+  document.getElementById('status-note-sub').textContent =
+    `${oldStatus} → ${newStatus} on Quote #${fmtSerial(serial)}`;
+  document.getElementById('status-note-text').value = '';
+  openModal('modal-status-note');
+  // Re-render log to reset the select visually until confirmed
+  renderLog();
+}
+
+function confirmStatusNote(saveNote) {
+  if (!pendingStatusChange) return;
+  const { serial, oldStatus, newStatus } = pendingStatusChange;
+  pendingStatusChange = null;
+  closeModal('modal-status-note');
+
+  const q = state.quotes.find(x => x.serial === serial);
+  if (!q) return;
+
+  const note = saveNote ? document.getElementById('status-note-text').value.trim() : '';
+  if (!q.status_history) q.status_history = [];
+  q.status_history.push({ from: oldStatus, to: newStatus, note, at: new Date().toISOString() });
+  q.status = newStatus;
+  saveState();
+  renderLog();
+  if (document.querySelector('#tab-dashboard:not(.hidden)')) renderDashboard();
+  toast(`Quote #${fmtSerial(serial)} → ${newStatus}`);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CUSTOMER AUTOCOMPLETE
+═══════════════════════════════════════════════════════════════ */
+function showCustomerAC(val) {
+  const list = document.getElementById('customer-ac');
+  if (!val || val.length < 1) { list.classList.add('hidden'); return; }
+  const matches = state.customers.filter(c =>
+    c.name.toLowerCase().includes(val.toLowerCase()) ||
+    (c.company||'').toLowerCase().includes(val.toLowerCase())
+  ).slice(0, 6);
+  if (matches.length === 0) { list.classList.add('hidden'); return; }
+  list.innerHTML = matches.map(c => `
+    <div class="ac-item" onmousedown="pickCustomerAC(${c.id})">
+      <div class="ac-item-name">${c.name}</div>
+      ${c.company ? `<div class="ac-item-company">${c.company}</div>` : ''}
+    </div>`).join('');
+  list.classList.remove('hidden');
+}
+
+function hideCustomerAC() {
+  document.getElementById('customer-ac')?.classList.add('hidden');
+}
+
+function pickCustomerAC(id) {
+  const c = state.customers.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('q-customer').value = c.name;
+  hideCustomerAC();
+  calcQuote();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CUSTOMERS TAB
+═══════════════════════════════════════════════════════════════ */
+function renderCustomers() {
+  const search = (document.getElementById('cust-search')?.value||'').toLowerCase();
+  let custs = [...state.customers];
+  if (search) custs = custs.filter(c =>
+    c.name.toLowerCase().includes(search) ||
+    (c.company||'').toLowerCase().includes(search) ||
+    (c.email||'').toLowerCase().includes(search)
+  );
+
+  const tbody  = document.getElementById('cust-body');
+  const empty  = document.getElementById('cust-empty');
+  const table  = document.getElementById('cust-table-wrap');
+
+  if (custs.length === 0) {
+    table.classList.add('hidden'); empty.classList.remove('hidden'); return;
+  }
+  table.classList.remove('hidden'); empty.classList.add('hidden');
+
+  tbody.innerHTML = custs.map(c => {
+    const quotes = state.quotes.filter(q => q.customer === c.name);
+    const spent  = quotes.reduce((s, q) => {
+      const calc = calcFromQuoteData(q);
+      return s + (parseFloat(q.quoted_price||0) > 0 ? parseFloat(q.quoted_price) : calc.suggested);
+    }, 0);
+    return `<tr class="log-row-clickable" onclick="showCustDrawer(${c.id})">
+      <td style="font-weight:500">${c.name}</td>
+      <td style="color:var(--text2)">${c.company||'—'}</td>
+      <td style="color:var(--text2)">${c.email ? `<a href="mailto:${c.email}" onclick="event.stopPropagation()" style="color:var(--accent2)">${c.email}</a>` : '—'}</td>
+      <td style="color:var(--text2)">${c.phone||'—'}</td>
+      <td class="td-center">${quotes.length}</td>
+      <td class="td-right td-mono">${cur(spent)}</td>
+      <td onclick="event.stopPropagation()">
+        <div style="display:flex;gap:4px">
+          <button class="btn btn-ghost btn-sm" onclick="openCustomerModal(${c.id})">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteCustomer(${c.id})">✕</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+let activeCustId = null;
+
+function showCustDrawer(id) {
+  const c = state.customers.find(x => x.id === id);
+  if (!c) return;
+  activeCustId = id;
+
+  document.getElementById('cd-name').textContent    = c.name;
+  document.getElementById('cd-company').textContent = c.company || '';
+  document.getElementById('cd-contact').innerHTML   =
+    (c.email ? `<a href="mailto:${c.email}" style="color:var(--accent2);font-size:12px">${c.email}</a>` : '') +
+    (c.phone ? `<span style="color:var(--text2);font-size:12px">${c.phone}</span>` : '');
+
+  const quotes = state.quotes.filter(q => q.customer === c.name)
+    .sort((a,b) => (b.serial||0)-(a.serial||0));
+  const totalSpent = quotes.reduce((s, q) => {
+    const calc = calcFromQuoteData(q);
+    return s + (parseFloat(q.quoted_price||0) > 0 ? parseFloat(q.quoted_price) : calc.suggested);
+  }, 0);
+  const accepted = quotes.filter(q => ['Accepted','In Progress','Complete'].includes(q.status)).length;
+  const statusMap = {Quoting:'quoting',Accepted:'accepted','In Progress':'progress',Complete:'complete',Declined:'declined'};
+
+  document.getElementById('cust-drawer-body').innerHTML = `
+    ${c.notes ? `<div class="drawer-section"><div class="drawer-section-label">Notes</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.6;padding:4px 0">${c.notes}</div></div>` : ''}
+    <div class="drawer-section">
+      <div class="drawer-section-label">Summary</div>
+      <div class="drawer-row"><span class="drawer-row-label">Total Quotes</span><span class="drawer-row-value">${quotes.length}</span></div>
+      <div class="drawer-row"><span class="drawer-row-label">Total Spent</span><span class="drawer-row-value green">${cur(totalSpent)}</span></div>
+      <div class="drawer-row"><span class="drawer-row-label">Accepted / Active</span><span class="drawer-row-value">${accepted}</span></div>
+      <div class="drawer-row"><span class="drawer-row-label">Member Since</span><span class="drawer-row-value">${c.created_at ? new Date(c.created_at).toLocaleDateString() : '—'}</span></div>
+    </div>
+    ${quotes.length > 0 ? `
+    <div class="drawer-section">
+      <div class="drawer-section-label">Quote History</div>
+      ${quotes.map(q => {
+        const calc = calcFromQuoteData(q);
+        return `<div class="history-item" style="cursor:pointer" onclick="closeCustDrawer();setTimeout(()=>showQuickView(${q.serial}),50)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">${q.quote_id||fmtSerial(q.serial)}</span>
+            <span class="badge badge-${statusMap[q.status]||'quoting'}" style="font-size:10px">${q.status||'Quoting'}</span>
+          </div>
+          <div style="font-size:12px;margin-top:2px">${q.description||q.project||'—'}</div>
+          <div style="display:flex;justify-content:space-between;margin-top:2px;font-size:11px;color:var(--text3)">
+            <span>${q.date||''}</span>
+            <span style="color:var(--green)">${cur(parseFloat(q.quoted_price||0)>0?q.quoted_price:calc.suggested)}</span>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>` : `<div class="drawer-section"><p style="font-size:12px;color:var(--text3)">No quotes yet.</p></div>`}
+  `;
+
+  document.getElementById('cust-drawer-backdrop').classList.add('open');
+  document.getElementById('cust-drawer').classList.add('open');
+}
+
+function closeCustDrawer() {
+  document.getElementById('cust-drawer-backdrop').classList.remove('open');
+  document.getElementById('cust-drawer').classList.remove('open');
+}
+
+function editCustomerDrawer() { closeCustDrawer(); openCustomerModal(activeCustId); }
+function deleteCustomerDrawer() { closeCustDrawer(); deleteCustomer(activeCustId); }
+
+function openCustByName(name) {
+  const c = state.customers.find(x => x.name.toLowerCase() === name.toLowerCase());
+  if (c) { showCustDrawer(c.id); return; }
+  // Customer doesn't exist yet — pre-fill the add modal
+  openCustomerModal(null, name);
+}
+
+function openCustomerModal(id = null, prefillName = '') {
+  document.getElementById('cust-modal-id').value       = id || '';
+  document.getElementById('cust-modal-title').textContent = id ? 'Edit Customer' : 'Add Customer';
+  if (id) {
+    const c = state.customers.find(x => x.id === id);
+    document.getElementById('cust-modal-name').value    = c?.name    || '';
+    document.getElementById('cust-modal-company').value = c?.company || '';
+    document.getElementById('cust-modal-email').value   = c?.email   || '';
+    document.getElementById('cust-modal-phone').value   = c?.phone   || '';
+    document.getElementById('cust-modal-notes').value   = c?.notes   || '';
+  } else {
+    document.getElementById('cust-modal-name').value    = prefillName;
+    document.getElementById('cust-modal-company').value = '';
+    document.getElementById('cust-modal-email').value   = '';
+    document.getElementById('cust-modal-phone').value   = '';
+    document.getElementById('cust-modal-notes').value   = '';
+  }
+  openModal('modal-customer');
+}
+
+function saveCustomerModal() {
+  const name = document.getElementById('cust-modal-name').value.trim();
+  if (!name) { toast('Name is required', 'error'); return; }
+  const id = parseInt(document.getElementById('cust-modal-id').value) || null;
+
+  const data = {
+    name,
+    company: document.getElementById('cust-modal-company').value.trim(),
+    email:   document.getElementById('cust-modal-email').value.trim(),
+    phone:   document.getElementById('cust-modal-phone').value.trim(),
+    notes:   document.getElementById('cust-modal-notes').value.trim(),
+  };
+
+  if (id) {
+    const idx = state.customers.findIndex(x => x.id === id);
+    if (idx >= 0) state.customers[idx] = { ...state.customers[idx], ...data };
+  } else {
+    const newId = state.customers.length > 0 ? Math.max(...state.customers.map(c => c.id)) + 1 : 1;
+    state.customers.push({ id: newId, ...data, created_at: new Date().toISOString() });
+  }
+  saveCustomers();
+  closeModal('modal-customer');
+  renderCustomers();
+  toast(id ? `${name} updated` : `${name} added`);
+}
+
+function deleteCustomer(id) {
+  const c = state.customers.find(x => x.id === id);
+  if (!c) return;
+  if (!confirm(`Delete ${c.name}? Their quotes will remain in the log.`)) return;
+  state.customers = state.customers.filter(x => x.id !== id);
+  saveCustomers();
+  renderCustomers();
+  toast(`${c.name} deleted`);
+}
+
+// Auto-create a customer profile when a new quote is logged
+function ensureCustomer(name) {
+  if (!name || state.customers.find(c => c.name.toLowerCase() === name.toLowerCase())) return;
+  const newId = state.customers.length > 0 ? Math.max(...state.customers.map(c => c.id)) + 1 : 1;
+  state.customers.push({ id: newId, name, company:'', email:'', phone:'', notes:'', created_at: new Date().toISOString() });
+  saveCustomers();
+}
 
 /* ═══════════════════════════════════════════════════════════════
    DASHBOARD
@@ -2288,7 +2737,7 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 });
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeDrawer();
+  if (e.key === 'Escape') { closeDrawer(); closeCustDrawer(); }
 });
 
 initApp();

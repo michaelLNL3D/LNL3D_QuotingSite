@@ -5,11 +5,15 @@ const path = require('path');
 const PORT       = 3000;
 const STATIC_DIR = __dirname;
 const DATA_DIR   = path.join(__dirname, 'data');
-const QUOTES_FILE = path.join(DATA_DIR, 'quotes.json');
+const QUOTES_FILE     = path.join(DATA_DIR, 'quotes.json');
+const CUSTOMERS_FILE  = path.join(DATA_DIR, 'customers.json');
+const SETTINGS_FILE   = path.join(DATA_DIR, 'settings.json');
 
-// Ensure data dir + file exist
-if (!fs.existsSync(DATA_DIR))   fs.mkdirSync(DATA_DIR);
-if (!fs.existsSync(QUOTES_FILE)) fs.writeFileSync(QUOTES_FILE, '[]', 'utf8');
+// Ensure data dir + files exist
+if (!fs.existsSync(DATA_DIR))       fs.mkdirSync(DATA_DIR);
+if (!fs.existsSync(QUOTES_FILE))    fs.writeFileSync(QUOTES_FILE,    '[]', 'utf8');
+if (!fs.existsSync(CUSTOMERS_FILE)) fs.writeFileSync(CUSTOMERS_FILE, '[]', 'utf8');
+if (!fs.existsSync(SETTINGS_FILE))  fs.writeFileSync(SETTINGS_FILE,  '{}', 'utf8');
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -47,6 +51,62 @@ http.createServer((req, res) => {
       try {
         JSON.parse(body); // validate before writing
         fs.writeFileSync(QUOTES_FILE, body, 'utf8');
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end('{"ok":true}');
+      } catch (e) {
+        res.writeHead(400); res.end('{"error":"Invalid JSON"}');
+      }
+    });
+    return;
+  }
+
+  // ── GET /api/settings ────────────────────────────────────────
+  if (req.method === 'GET' && url.pathname === '/api/settings') {
+    try {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(fs.readFileSync(SETTINGS_FILE, 'utf8'));
+    } catch (e) {
+      res.writeHead(500); res.end('{}');
+    }
+    return;
+  }
+
+  // ── POST /api/settings ───────────────────────────────────────
+  if (req.method === 'POST' && url.pathname === '/api/settings') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        JSON.parse(body);
+        fs.writeFileSync(SETTINGS_FILE, body, 'utf8');
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end('{"ok":true}');
+      } catch (e) {
+        res.writeHead(400); res.end('{"error":"Invalid JSON"}');
+      }
+    });
+    return;
+  }
+
+  // ── GET /api/customers ───────────────────────────────────────
+  if (req.method === 'GET' && url.pathname === '/api/customers') {
+    try {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(fs.readFileSync(CUSTOMERS_FILE, 'utf8'));
+    } catch (e) {
+      res.writeHead(500); res.end('[]');
+    }
+    return;
+  }
+
+  // ── POST /api/customers ──────────────────────────────────────
+  if (req.method === 'POST' && url.pathname === '/api/customers') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        JSON.parse(body);
+        fs.writeFileSync(CUSTOMERS_FILE, body, 'utf8');
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end('{"ok":true}');
       } catch (e) {
