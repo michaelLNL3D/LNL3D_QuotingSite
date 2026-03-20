@@ -429,8 +429,11 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
    CUSTOMER PDF VIEW
 ═══════════════════════════════════════════════════════════════ */
 .pdf-modal .modal { min-width: 700px; max-width: 740px; background: #ffffff !important; color: #111827 !important; padding: 0 !important; border-radius: 4px; overflow-y: auto; }
-.pdf-modal .modal * { color: inherit !important; }
 .pdf-doc { font-family: 'DM Sans', sans-serif; color: #111827 !important; background: #ffffff !important; }
+.pdf-doc * { color: inherit !important; }
+.pdf-modal .modal-footer { background: var(--bg2) !important; color: var(--text) !important; }
+.pdf-modal .modal-footer .btn { color: var(--text) !important; }
+.pdf-modal .modal-footer .btn-primary { color: #fff !important; }
 
 /* Header — clean white with transparent logo */
 .pdf-header { border-bottom: 2px solid #111827; display: flex; justify-content: space-between; align-items: center; padding: 28px 40px; }
@@ -3007,6 +3010,25 @@ function copyEmailQuote() {
 
   const line = (label, val) => val ? `${label}: ${val}` : null;
   const divider = '─'.repeat(40);
+  const col = (str, w) => String(str).padEnd(w);
+
+  // Pricing schedule table
+  const scheduleLines = [
+    `PRICING SCHEDULE`,
+    `${col('QTY',8)}${col('UNIT PRICE',12)}TOTAL`,
+  ].concat(c.schedule.map(t => {
+    const active = t.qty <= parseInt(q.quantity||1) &&
+      t.qty === c.schedule.filter(r => r.qty <= parseInt(q.quantity||1)).reduce((b,r) => r.qty > b ? r.qty : b, 0);
+    return `${col(Math.max(t.qty,1)+'+ pc', 8)}${col(cur(t.pricePP),12)}${cur(t.total)}${active ? '  ◀ selected qty' : ''}`;
+  })).join('\n');
+
+  // Material options table
+  const matLines = [
+    `MATERIAL OPTIONS  (at qty ${parseInt(q.quantity)||1})`,
+    `${col('MATERIAL',14)}${col('UNIT',12)}TOTAL`,
+  ].concat(c.matComparison.filter(Boolean).map(m =>
+    `${col(m.name + (m.current?' ◀':''), 14)}${col(cur(m.pricePP),12)}${cur(m.total)}`
+  )).join('\n');
 
   const text = [
     `Hi ${q.customer || 'there'},`,
@@ -3031,6 +3053,10 @@ function copyEmailQuote() {
     `QUOTED PRICE: ${cur(price)} + tax`,
     `Per unit:     ${cur(ppu)} / pc + tax`,
     divider,
+    ``,
+    scheduleLines,
+    ``,
+    matLines,
     q.expiry ? `\nThis quote is valid until ${q.expiry}.` : '',
     q.notes  ? `\nNotes: ${q.notes}` : '',
     ``,
