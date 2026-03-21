@@ -1,0 +1,11 @@
+services:
+  lnl3d-quotes:
+    build: .
+    container_name: lnl3d-quotes
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mount local data/ folder so quotes/customers/settings persist
+      # across container restarts and image rebuilds
+      - ./data:/app/data
+    restart: unless-stopped

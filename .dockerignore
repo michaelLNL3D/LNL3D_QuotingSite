@@ -1,0 +1,6 @@
+data/
+.git/
+.claude/
+*.xlsm
+*.md
+.DS_Store
