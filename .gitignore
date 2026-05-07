@@ -1,5 +1,5 @@
-# Don't commit quote data (keep in data/ but exclude from repo)
-data/quotes.json
+# Don't commit any persistent data (customers, quotes, settings stay local)
+data/
 
 # macOS
 .DS_Store
