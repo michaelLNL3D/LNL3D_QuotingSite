@@ -497,6 +497,49 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 .pdf-footer-left { font-size: 10px; color: #9ca3af; }
 .pdf-footer-right { font-family: 'DM Mono', monospace; font-size: 10px; color: #d1d5db; }
 
+/* ── Shared extra-page base ────────────────────────────────── */
+.pdf-page-extra { page-break-before: always; padding: 28px 32px 0; }
+
+/* ── Process & Lead Times page ─────────────────────────────── */
+.pdf-process-header { display: flex; align-items: center; gap: 14px; border-bottom: 2px solid #e5e7eb; padding-bottom: 14px; margin-bottom: 18px; }
+.pdf-process-header-title { font-size: 18px; font-weight: 700; color: #111827; }
+.pdf-process-header-sub   { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.pdf-process-timeline { display: flex; gap: 0; margin-bottom: 20px; }
+.pdf-process-step { flex: 1; position: relative; padding: 0 8px 0 0; }
+.pdf-process-step:not(:last-child)::after { content: '›'; position: absolute; right: -4px; top: 12px; font-size: 16px; color: #9ca3af; }
+.pdf-process-step-num { width: 24px; height: 24px; border-radius: 50%; background: #2563eb; color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
+.pdf-process-step-title { font-size: 11px; font-weight: 700; color: #111827; margin-bottom: 2px; }
+.pdf-process-step-desc  { font-size: 9.5px; color: #6b7280; line-height: 1.45; }
+.pdf-leadtime-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 12px; }
+.pdf-leadtime-table th { background: #f3f4f6; color: #374151; font-weight: 600; padding: 6px 10px; border: 1px solid #e5e7eb; text-align: left; }
+.pdf-leadtime-table td { padding: 6px 10px; border: 1px solid #e5e7eb; color: #111827; }
+.pdf-leadtime-table tr:nth-child(even) td { background: #f9fafb; }
+.pdf-process-note { font-size: 9.5px; color: #6b7280; font-style: italic; border-top: 1px solid #e5e7eb; padding-top: 8px; margin-top: 4px; }
+
+/* ── Post-Processing Menu page ─────────────────────────────── */
+.pdf-post-header { display: flex; align-items: center; gap: 14px; border-bottom: 2px solid #e5e7eb; padding-bottom: 14px; margin-bottom: 14px; }
+.pdf-post-header-title { font-size: 18px; font-weight: 700; color: #111827; }
+.pdf-post-header-sub   { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.pdf-post-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.pdf-post-card  { border: 1px solid #e5e7eb; border-radius: 6px; overflow: hidden; }
+.pdf-post-card-head { background: #f3f4f6; padding: 7px 10px; border-bottom: 1px solid #e5e7eb; }
+.pdf-post-card-name { font-size: 12px; font-weight: 700; color: #111827; display: block; }
+.pdf-post-card-body { padding: 7px 10px; }
+.pdf-post-card-desc { font-size: 10px; color: #374151; line-height: 1.45; margin-bottom: 6px; }
+.pdf-post-price { display: flex; align-items: baseline; justify-content: flex-end; gap: 4px; border-top: 1px solid #f3f4f6; padding-top: 5px; }
+.pdf-post-price-amount { font-size: 13px; font-weight: 700; color: #2563eb; font-family: 'DM Mono', monospace; }
+.pdf-post-price-unit   { font-size: 9px; color: #6b7280; }
+.pdf-post-note { font-size: 9.5px; color: #6b7280; font-style: italic; border-top: 1px solid #e5e7eb; padding-top: 8px; margin-top: 4px; }
+
+/* ── FAQ page ───────────────────────────────────────────────── */
+.pdf-faq-header { display: flex; align-items: center; gap: 14px; border-bottom: 2px solid #e5e7eb; padding-bottom: 14px; margin-bottom: 14px; }
+.pdf-faq-header-title { font-size: 18px; font-weight: 700; color: #111827; }
+.pdf-faq-header-sub   { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.pdf-faq-list { display: flex; flex-direction: column; gap: 10px; }
+.pdf-faq-item { border-left: 3px solid #2563eb; padding: 8px 10px; background: #f9fafb; border-radius: 0 4px 4px 0; }
+.pdf-faq-q { font-size: 11px; font-weight: 700; color: #111827; margin-bottom: 3px; }
+.pdf-faq-a { font-size: 10px; color: #374151; line-height: 1.5; }
+
 /* ── Material Guide Page ───────────────────────────────────── */
 .pdf-mat-page { page-break-before: always; padding: 28px 32px 0; }
 .pdf-mat-header { display: flex; align-items: center; gap: 14px; border-bottom: 2px solid #e5e7eb; padding-bottom: 14px; margin-bottom: 12px; }
@@ -523,26 +566,84 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 /* ═══════════════════════════════════════════════════════════════
    PRINT STYLES
 ═══════════════════════════════════════════════════════════════ */
+
+/* Zero out page margins so the browser doesn't add its own gutter and,
+   crucially, so the browser-injected date/URL/page-number header and
+   footer rows (which live in the margin area) are eliminated entirely.  */
+@page { margin: 0; }
+
 @media print {
-  body { background: white !important; }
-  .topbar, .nav, .topbar-actions, .quote-form, .quote-sidebar,
-  .log-toolbar, .settings-layout, .btn, .modal-footer,
-  #tab-dashboard, #tab-log, #tab-settings { display: none !important; }
-  .modal-overlay { position: static !important; background: none !important; opacity: 1 !important; pointer-events: all !important; display: block !important; }
-  .modal { box-shadow: none !important; border: none !important; min-width: 100% !important; max-width: 100% !important; padding: 0 !important; transform: none !important; background: white !important; }
-  .pdf-doc { color: #111827 !important; background: white !important; }
-  .pdf-row-label { background: #f3f4f6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .pdf-row-value { background: #ffffff !important; color: #111827 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .pdf-table th { background: #f3f4f6 !important; color: #374151 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .pdf-table td { background: #ffffff !important; color: #111827 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  /* Layout hiding is handled entirely by _executePrint() in JS via inline
+     styles, so these rules only need to preserve background colours that
+     browsers strip by default when printing.                             */
+  body { background: #fff !important; }
+  .pdf-doc { color: #111827 !important; background: #fff !important; }
+  .pdf-row-label  { background: #f3f4f6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pdf-row-value  { background: #ffffff !important; color: #111827 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pdf-table th   { background: #f3f4f6 !important; color: #374151 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pdf-table td   { background: #ffffff !important; color: #111827 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .pdf-table tr:nth-child(even) td { background: #f9fafb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .pdf-table thead tr { background: #f9fafb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pdf-table thead tr  { background: #f9fafb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .pdf-table tr.selected td { background: #f0f9ff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .pdf-footer-strip { background: #f9fafb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .pdf-mat-card-head { background: #f3f4f6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .pdf-mat-intro { background: #f9fafb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .pdf-mat-dots .on  { color: #2563eb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .pdf-mat-dots .off { color: #d1d5db !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pdf-footer-strip    { background: #f9fafb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pdf-mat-card-head   { background: #f3f4f6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pdf-mat-intro       { background: #f9fafb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pdf-mat-dots .on    { color: #2563eb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pdf-mat-dots .off   { color: #d1d5db !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pdf-process-step-num  { background: #2563eb !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pdf-leadtime-table th { background: #f3f4f6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pdf-leadtime-table tr:nth-child(even) td { background: #f9fafb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pdf-post-card-head  { background: #f3f4f6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pdf-post-price-amount { color: #2563eb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pdf-faq-item        { background: #f9fafb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pdf-faq-item        { border-left-color: #2563eb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  /* ── Material guide: tighten spacing so all 9 cards + footer fit on one
+     A4 page. Chrome's print font metrics differ from screen, which can
+     add ~30px over the screen-measured height, so we shed ~90px of padding
+     and gap. The on-screen preview is unaffected by these rules.         */
+  .pdf-mat-page         { padding-top: 20px !important; }
+  .pdf-mat-header       { padding-bottom: 10px !important; margin-bottom: 8px !important; }
+  .pdf-mat-intro        { margin-bottom: 10px !important; }
+  .pdf-mat-grid         { gap: 7px !important; margin-bottom: 10px !important; }
+  .pdf-mat-card-head    { padding-top: 5px !important; padding-bottom: 5px !important; }
+  .pdf-mat-body         { padding-top: 5px !important; padding-bottom: 5px !important; }
+  .pdf-mat-props        { margin-bottom: 5px !important; }
+  .pdf-mat-note         { margin-top: 2px !important; padding-top: 6px !important; }
+  .pdf-footer-strip     { padding-top: 8px !important; padding-bottom: 8px !important; }
+
+  /* ── Shared extra-page base ──────────────────────────────────────────── */
+  /* Same treatment as .pdf-mat-page — shed top padding to absorb Chrome's
+     font-metric inflation before content even starts.                     */
+  .pdf-page-extra       { padding-top: 20px !important; }
+
+  /* ── Process & Lead Times page ───────────────────────────────────────── */
+  /* The .pdf-section-label reused here carries margin: 24px 0 10px from the
+     quote stylesheet — that 24px top-gap becomes conspicuous in print.    */
+  .pdf-process-header   { padding-bottom: 10px !important; margin-bottom: 12px !important; }
+  .pdf-process-timeline { margin-bottom: 12px !important; }
+  .pdf-process-step-num { width: 20px !important; height: 20px !important; font-size: 10px !important; margin-bottom: 4px !important; }
+  .pdf-leadtime-table   { margin-bottom: 8px !important; }
+  .pdf-leadtime-table th,
+  .pdf-leadtime-table td { padding: 4px 8px !important; }
+  .pdf-process-note     { margin-top: 2px !important; padding-top: 6px !important; }
+
+  /* ── Post-Processing Menu page ───────────────────────────────────────── */
+  .pdf-post-header      { padding-bottom: 10px !important; margin-bottom: 10px !important; }
+  .pdf-post-grid        { gap: 7px !important; margin-bottom: 10px !important; }
+  .pdf-post-card-head   { padding-top: 5px !important; padding-bottom: 5px !important; }
+  .pdf-post-card-body   { padding-top: 5px !important; padding-bottom: 5px !important; }
+  .pdf-post-card-desc   { margin-bottom: 4px !important; }
+  .pdf-post-note        { margin-top: 2px !important; padding-top: 6px !important; }
+
+  /* ── FAQ page ────────────────────────────────────────────────────────── */
+  /* 8 Q&A pairs with multi-line answers are the tightest fit. Reduce gap,
+     item padding, and line-height to keep everything on one A4 page.     */
+  .pdf-faq-header       { padding-bottom: 10px !important; margin-bottom: 10px !important; }
+  .pdf-faq-list         { gap: 6px !important; }
+  .pdf-faq-item         { padding: 5px 8px !important; }
+  .pdf-faq-q            { margin-bottom: 2px !important; }
+  .pdf-faq-a            { line-height: 1.4 !important; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1056,6 +1157,7 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
       <button class="settings-nav-item" onclick="showSettingsPanel('printers')">Printers</button>
       <button class="settings-nav-item" onclick="showSettingsPanel('materials')">Materials</button>
       <button class="settings-nav-item" onclick="showSettingsPanel('danger')">Data</button>
+      <button class="settings-nav-item" onclick="showSettingsPanel('pdf')">PDF Output</button>
     </div>
     <div>
 
@@ -1108,6 +1210,42 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
           </table>
         </div>
         <button class="btn btn-ghost btn-sm mt-8" onclick="addMaterialRow()">+ Add Material</button>
+      </div>
+
+      <!-- PDF Output panel: page-mix toggles live in the PDF preview modal,
+           so this panel only configures the data those optional pages display. -->
+      <div class="settings-panel card" id="panel-pdf">
+        <div class="card-header">⬡ PDF Output</div>
+        <div style="font-size:12px;color:var(--text2);margin:-4px 0 16px">
+          Page on/off toggles live in the PDF preview window — toggle per-quote when generating.
+          Edit the data those pages display below.
+        </div>
+
+        <!-- Lead-time tiers (Process &amp; Lead Times page) -->
+        <div style="margin-bottom:20px">
+          <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Lead-Time Tiers</div>
+          <div class="table-wrap" style="border:none">
+            <table class="edit-table" id="lead-times-table">
+              <thead><tr><th style="min-width:110px">Range</th><th>Standard</th><th>Rush</th><th></th></tr></thead>
+              <tbody id="lead-times-body"></tbody>
+            </table>
+          </div>
+          <button class="btn btn-ghost btn-sm mt-8" onclick="addLeadTimeRow()">+ Add Tier</button>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Post-processing services (Post-Processing Menu page) -->
+        <div style="margin-top:16px">
+          <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Post-Processing Services</div>
+          <div class="table-wrap" style="border:none">
+            <table class="edit-table" id="postprocess-services-table">
+              <thead><tr><th style="min-width:140px">Name</th><th style="min-width:220px">Description</th><th>Price ($)</th><th>Unit</th><th></th></tr></thead>
+              <tbody id="postprocess-services-body"></tbody>
+            </table>
+          </div>
+          <button class="btn btn-ghost btn-sm mt-8" onclick="addPostprocessServiceRow()">+ Add Service</button>
+        </div>
       </div>
 
       <!-- Danger panel -->
@@ -1178,12 +1316,32 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
     <div class="pdf-doc" id="pdf-content">
       <!-- filled by JS -->
     </div>
-    <div class="modal-footer" style="padding:16px 20px;background:var(--bg2);border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-      <button class="btn btn-ghost" onclick="closeModal('modal-pdf')">✕ Close</button>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-ghost" onclick="copyEmailQuote()">✉ Copy for Email</button>
-        <button class="btn btn-ghost" onclick="printPDF()">🖨 Print</button>
-        <button class="btn btn-primary" onclick="savePDF()">↓ Save as PDF</button>
+    <div class="modal-footer" style="padding:14px 20px;background:var(--bg2);border-top:1px solid var(--border);display:flex;flex-direction:column;gap:10px">
+      <!-- Page-mix toggles: Quote summary is always included; the rest are opt-in.    -->
+      <!-- Re-rendering on change keeps the on-screen preview in sync with the export. -->
+      <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--text2)">
+        <span style="font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.4px;font-size:11px">Include pages:</span>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none">
+          <input type="checkbox" id="pdf-toggle-process" checked onchange="onPdfToggleChange()"> Process &amp; Lead Times
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none">
+          <input type="checkbox" id="pdf-toggle-postprocess" checked onchange="onPdfToggleChange()"> Post-Processing Menu
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none">
+          <input type="checkbox" id="pdf-toggle-materials" checked onchange="onPdfToggleChange()"> Material Guide
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none">
+          <input type="checkbox" id="pdf-toggle-faq" checked onchange="onPdfToggleChange()"> FAQ
+        </label>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <button class="btn btn-ghost" onclick="closeModal('modal-pdf')">✕ Close</button>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost" onclick="copyEmailQuote()">✉ Copy for Email</button>
+          <button class="btn btn-ghost" onclick="exportInvoiceNinjaCSV()">↓ Invoice Ninja</button>
+          <button class="btn btn-ghost" onclick="printPDF()">🖨 Print</button>
+          <button class="btn btn-primary" onclick="savePDF()">↓ Save as PDF</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1429,7 +1587,22 @@ const DEFAULTS = {
       {name:'LW PLA HT', complexity:7, spool_price:46, spool_kg:1, density:1.24},
       {name:'LW PLA',    complexity:2, spool_price:35, spool_kg:1, density:1.24},
       {name:'PA12',      complexity:8, spool_price:86, spool_kg:1, density:1.24},
-    ]
+    ],
+    lead_times: [
+      { range: '1–10 pcs',   standard: '3–5 days',  rush: '1–2 days' },
+      { range: '11–50 pcs',  standard: '1 week',    rush: '3–4 days' },
+      { range: '51–500 pcs', standard: '2–3 weeks', rush: '1 week'   },
+      { range: '500+ pcs',   standard: 'Custom',    rush: 'Custom'   },
+    ],
+    postprocess_services: [
+      { name: 'Light sanding',    price:  5, unit: 'per part',   desc: 'Knock down layer lines on visible faces.' },
+      { name: 'Full smoothing',   price: 15, unit: 'per part',   desc: 'Sand to satin finish, paint-ready surface.' },
+      { name: 'Vapor smoothing',  price: 25, unit: 'per part',   desc: 'Glossy chemical-smoothed finish (ABS / ASA only).' },
+      { name: 'Primer + paint',   price: 30, unit: 'per part',   desc: 'Single colour, automotive-grade enamel.' },
+      { name: 'Threaded inserts', price:  2, unit: 'per insert', desc: 'Heat-set brass inserts (M3 / M4 / M5).' },
+      { name: 'Assembly',         price: 60, unit: 'per hour',   desc: 'Multi-part assembly with fasteners or adhesive.' },
+      { name: 'Color matching',   price: 40, unit: 'flat fee',   desc: 'Custom-mixed paint to your sample / Pantone.' },
+    ],
   },
   quotes: []
 };
@@ -2260,6 +2433,11 @@ function deleteQuote(serial) {
 function showLogPDF(serial) {
   const q = state.quotes.find(x => x.serial === serial);
   if (!q) return;
+  // Reset optional-page toggles to "all on" — same behaviour as showCustomerPDF
+  ['pdf-toggle-process','pdf-toggle-postprocess','pdf-toggle-materials','pdf-toggle-faq'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.checked = true;
+  });
   renderPDFModal(q);
   openModal('modal-pdf');
 }
@@ -2790,6 +2968,12 @@ function renderDashboard() {
 ═══════════════════════════════════════════════════════════════ */
 function showCustomerPDF() {
   const q = getFormData();
+  // Reset the optional-page checkboxes to "all on" each open so behaviour is
+  // predictable per-quote — last quote's mix doesn't bleed into this one.
+  ['pdf-toggle-process','pdf-toggle-postprocess','pdf-toggle-materials','pdf-toggle-faq'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.checked = true;
+  });
   renderPDFModal(q);
   openModal('modal-pdf');
 }
@@ -2828,6 +3012,16 @@ function renderPDFModal(q) {
       <div class="pdf-row-label">Notes</div>
       <div class="pdf-row-value" style="white-space:pre-wrap">${q.notes}</div>
     </div>` : '';
+
+  // Pre-compute optional page HTML before the template literal — avoids an
+  // IIFE inside innerHTML which some browsers misparse on complex templates.
+  const _t = getPdfPageToggles();
+  const _processServicesHtml =
+    (_t.process && _t.postprocess) ? buildCombinedProcessServicesPage() :
+    _t.process                     ? buildProcessPage()                  :
+    _t.postprocess                 ? buildPostProcessPage()              : '';
+  const _materialsHtml = _t.materials ? buildMaterialsPage() : '';
+  const _faqHtml       = _t.faq       ? buildFaqPage()       : '';
 
   window._currentPDFQuote = q;
   document.getElementById('pdf-content').innerHTML = `
@@ -2935,8 +3129,38 @@ function renderPDFModal(q) {
     </div>
 
   </div>
-  ${buildMaterialsPage()}
+  ${_processServicesHtml}
+  ${_materialsHtml}
+  ${_faqHtml}
   `;
+}
+
+/* Read on/off state for the three optional pages from the PDF preview modal
+   checkboxes. Falls back to "all on" if the modal hasn't initialised yet —
+   keeps initial render correct on first open before checkboxes have a value. */
+function getPdfPageToggles() {
+  const get = (id, fallback) => {
+    const el = document.getElementById(id);
+    return el ? el.checked : fallback;
+  };
+  return {
+    process:     get('pdf-toggle-process',     true),
+    postprocess: get('pdf-toggle-postprocess', true),
+    materials:   get('pdf-toggle-materials',   true),
+    faq:         get('pdf-toggle-faq',         true),
+  };
+}
+
+/* Re-render the PDF preview when a toggle is flipped, so the modal contents
+   match exactly what Print / Save will export. _currentPDFQuote is set by
+   showCustomerPDF and getFormData fallbacks ensure live-edits also work.   */
+function onPdfToggleChange() {
+  const q = window._currentPDFQuote || (typeof getFormData === 'function' ? getFormData() : null);
+  if (!q) return;
+  renderPDFModal(q);
+  // Restore scroll to top so customers see the quote summary first
+  const modal = document.querySelector('#modal-pdf .modal');
+  if (modal) modal.scrollTop = 0;
 }
 
 const MAT_INFO = {
@@ -2995,6 +3219,209 @@ function buildMaterialsPage() {
     <div class="pdf-footer-strip">
       <div class="pdf-footer-left">Material properties are approximate and may vary by colour, print settings, and application.</div>
       <div class="pdf-footer-right" style="display:flex;align-items:center;gap:8px"><img src="${LOGO_URI}" alt="LNL3D" style="height:14px;width:auto;vertical-align:middle;">&nbsp;${s.company||'LNL3D'} Solutions</div>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   OPTIONAL PDF PAGES
+═══════════════════════════════════════════════════════════════ */
+
+const PROCESS_STEPS = [
+  { title:'File Review',        desc:'We sanity-check your STL/STEP for printability and contact you with any concerns.' },
+  { title:'Quote Confirmation', desc:'You approve material, finishing, and quantity. Deposit (if any) is collected.' },
+  { title:'Print Queue',        desc:'Job is slotted into the production schedule. Rush orders skip the queue.' },
+  { title:'Post-Processing',    desc:'Supports removed, surfaces sanded or smoothed, requested finishing applied.' },
+  { title:'QA & Ship',          desc:'Each piece is inspected and packed. Tracking is sent on dispatch.' },
+];
+
+/* Combined builder — used when both Process and Post-Processing toggles are on.
+   Merges both sections onto a single A4 page to avoid two half-empty pages. */
+function buildCombinedProcessServicesPage() {
+  const s = state.settings;
+  const tiers = s.lead_times || [];
+  const services = s.postprocess_services || [];
+
+  const steps = PROCESS_STEPS.map((step, i) => `
+    <div class="pdf-process-step">
+      <div class="pdf-process-step-num">${i+1}</div>
+      <div class="pdf-process-step-title">${step.title}</div>
+      <div class="pdf-process-step-desc">${step.desc}</div>
+    </div>`).join('');
+
+  const rows = tiers.map(t => `<tr>
+    <td style="font-weight:600">${t.range}</td>
+    <td>${t.standard}</td>
+    <td>${t.rush}</td>
+  </tr>`).join('');
+
+  const cards = services.map(svc => `
+    <div class="pdf-post-card">
+      <div class="pdf-post-card-head"><span class="pdf-post-card-name">${svc.name}</span></div>
+      <div class="pdf-post-card-body">
+        <div class="pdf-post-card-desc">${svc.desc}</div>
+        <div class="pdf-post-price">
+          <span class="pdf-post-price-amount">${cur(svc.price)}</span>
+          <span class="pdf-post-price-unit">${svc.unit}</span>
+        </div>
+      </div>
+    </div>`).join('');
+
+  return `
+  <div class="pdf-doc pdf-page-extra">
+    <div class="pdf-process-header">
+      <img src="${LOGO_URI}" alt="LNL3D" style="height:32px;width:auto;">
+      <div>
+        <div class="pdf-process-header-title">What Happens Next</div>
+        <div class="pdf-process-header-sub">Production workflow, turnaround times, and finishing options — ${s.company||'LNL3D'}</div>
+      </div>
+    </div>
+
+    <div class="pdf-process-timeline">${steps}</div>
+
+    <div class="pdf-section-label" style="margin-bottom:8px">Typical Lead Times</div>
+    <table class="pdf-leadtime-table">
+      <thead><tr><th>Quantity</th><th>Standard</th><th>Rush</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <p class="pdf-process-note">Standard turnaround starts when files are confirmed. Rush surcharge — see your quote's Rush field. Lead times exclude shipping transit.</p>
+
+    <!-- ── Finishing Services section ──────────────────────────── -->
+    <div style="border-top:2px solid #e5e7eb;margin:16px 0 12px;display:flex;align-items:baseline;gap:10px">
+      <span style="font-size:14px;font-weight:700;color:#111827">Finishing Services</span>
+      <span style="font-size:11px;color:#6b7280">Post-processing options &amp; pricing</span>
+    </div>
+
+    <div class="pdf-post-grid">${cards}</div>
+    <p class="pdf-post-note">Add finishing services to your quote — call or email us to confirm scope and pricing for your specific parts.</p>
+
+    <div class="pdf-footer-strip">
+      <div class="pdf-footer-left">Timing windows are estimates. Finishing prices are starting points; complex work may carry an upcharge.</div>
+      <div class="pdf-footer-right" style="display:flex;align-items:center;gap:8px"><img src="${LOGO_URI}" alt="LNL3D" style="height:14px;width:auto;vertical-align:middle;">&nbsp;${s.company||'LNL3D'} Solutions</div>
+    </div>
+  </div>`;
+}
+
+function buildProcessPage() {
+  const s = state.settings;
+  const tiers = s.lead_times || [];
+  const steps = PROCESS_STEPS.map((step, i) => `
+    <div class="pdf-process-step">
+      <div class="pdf-process-step-num">${i+1}</div>
+      <div class="pdf-process-step-title">${step.title}</div>
+      <div class="pdf-process-step-desc">${step.desc}</div>
+    </div>`).join('');
+
+  const rows = tiers.map(t => `<tr>
+    <td style="font-weight:600">${t.range}</td>
+    <td>${t.standard}</td>
+    <td>${t.rush}</td>
+  </tr>`).join('');
+
+  return `
+  <div class="pdf-doc pdf-page-extra">
+    <div class="pdf-process-header">
+      <img src="${LOGO_URI}" alt="LNL3D" style="height:32px;width:auto;">
+      <div>
+        <div class="pdf-process-header-title">What Happens Next</div>
+        <div class="pdf-process-header-sub">Production workflow and typical turnaround</div>
+      </div>
+    </div>
+
+    <div class="pdf-process-timeline">${steps}</div>
+
+    <div class="pdf-section-label" style="margin-bottom:8px">Typical Lead Times</div>
+    <table class="pdf-leadtime-table">
+      <thead><tr><th>Quantity</th><th>Standard</th><th>Rush</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <p class="pdf-process-note">Standard turnaround starts when files are confirmed. Rush surcharge — see your quote's Rush field. Lead times exclude shipping transit.</p>
+
+    <div class="pdf-footer-strip">
+      <div class="pdf-footer-left">All timing windows are estimates and may shift with current shop load.</div>
+      <div class="pdf-footer-right" style="display:flex;align-items:center;gap:8px"><img src="${LOGO_URI}" alt="LNL3D" style="height:14px;width:auto;vertical-align:middle;">&nbsp;${s.company||'LNL3D'} Solutions</div>
+    </div>
+  </div>`;
+}
+
+function buildPostProcessPage() {
+  const s = state.settings;
+  const services = s.postprocess_services || [];
+  const cards = services.map(svc => `
+    <div class="pdf-post-card">
+      <div class="pdf-post-card-head">
+        <span class="pdf-post-card-name">${svc.name}</span>
+      </div>
+      <div class="pdf-post-card-body">
+        <div class="pdf-post-card-desc">${svc.desc}</div>
+        <div class="pdf-post-price">
+          <span class="pdf-post-price-amount">${cur(svc.price)}</span>
+          <span class="pdf-post-price-unit">${svc.unit}</span>
+        </div>
+      </div>
+    </div>`).join('');
+
+  return `
+  <div class="pdf-doc pdf-page-extra">
+    <div class="pdf-post-header">
+      <img src="${LOGO_URI}" alt="LNL3D" style="height:32px;width:auto;">
+      <div>
+        <div class="pdf-post-header-title">Finishing Services</div>
+        <div class="pdf-post-header-sub">Post-processing options &amp; pricing</div>
+      </div>
+    </div>
+
+    <div class="pdf-post-grid">${cards}</div>
+
+    <p class="pdf-post-note">Add finishing services to your quote — call or email us to confirm scope and pricing for your specific parts.</p>
+
+    <div class="pdf-footer-strip">
+      <div class="pdf-footer-left">Listed prices are starting points; complex geometry or custom finishes may carry an upcharge.</div>
+      <div class="pdf-footer-right" style="display:flex;align-items:center;gap:8px"><img src="${LOGO_URI}" alt="LNL3D" style="height:14px;width:auto;vertical-align:middle;">&nbsp;${s.company||'LNL3D'} Solutions</div>
+    </div>
+  </div>`;
+}
+
+/* ── FAQ data (brand voice — not in settings) ──────────────── */
+const FAQ_DATA = [
+  { q: 'How strong are FDM 3D printed parts?',
+    a: "Strength varies by material and print orientation. PETG-CF and PA12 are excellent for structural loads; PLA+ and PETG cover most prototypes and light functional parts. We'll recommend the right material once we review your application." },
+  { q: 'What file formats do you accept?',
+    a: 'We accept STL, 3MF, STEP, and OBJ. STEP/3MF are preferred for dimensional accuracy. If you only have a PDF drawing or concept sketch, reach out — we can often work with it.' },
+  { q: 'Can I get a custom colour?',
+    a: "We stock a wide range of filament colours. For an exact match (Pantone or RAL), we offer a colour-matching paint service — see the Finishing Services page. Contact us before ordering to confirm availability." },
+  { q: 'How are lead times measured?',
+    a: 'Turnaround starts once files are confirmed and payment (or a deposit for larger orders) is received. Standard and Rush windows are shown on the Process page. Complex post-processing adds 1–2 days.' },
+  { q: 'Is my design kept confidential?',
+    a: "Yes. We treat all files as confidential and do not share or reproduce client designs. We're happy to sign an NDA on request — just ask before sending files." },
+  { q: 'Can you scale from prototype to production?',
+    a: 'Yes. We regularly run the same part from 1-off prototypes through to 500+ production runs. Pricing tiers automatically adjust for quantity — see the Pricing Schedule on your quote.' },
+  { q: 'What happens if a part has a defect?',
+    a: "We perform a visual and dimensional QA check before shipping. If a part doesn't meet spec, we reprint it at no charge. Please report any issues within 7 days of receipt with a photo." },
+  { q: 'Are printed parts safe for food contact or outdoor use?',
+    a: 'Food contact: not recommended for FDM parts due to micro-porosity in layer lines. Outdoor UV resistance varies — ASA is our best outdoor material. Ask us for specifics on your application.' },
+];
+
+function buildFaqPage() {
+  const s = state.settings;
+  const items = FAQ_DATA.map(faq => `
+    <div class="pdf-faq-item">
+      <div class="pdf-faq-q">${faq.q}</div>
+      <div class="pdf-faq-a">${faq.a}</div>
+    </div>`).join('');
+  return `
+  <div class="pdf-doc pdf-page-extra">
+    <div class="pdf-faq-header">
+      <img src="${LOGO_URI}" alt="${s.company||'LNL3D'}" style="height:32px;width:auto;">
+      <div>
+        <div class="pdf-faq-header-title">Frequently Asked Questions</div>
+        <div class="pdf-faq-header-sub">Common questions about our 3D printing service — ${s.company||'LNL3D'}</div>
+      </div>
+    </div>
+    <div class="pdf-faq-list">${items}</div>
+    <div class="pdf-footer-strip" style="margin-top:14px">
+      <div class="pdf-footer-left">More questions? Contact us — we're happy to help before, during, and after your order.</div>
+      <div class="pdf-footer-right" style="display:flex;align-items:center;gap:8px"><img src="${LOGO_URI}" alt="${s.company||'LNL3D'}" style="height:14px;width:auto;vertical-align:middle;">&nbsp;${s.company||'LNL3D'} Solutions</div>
     </div>
   </div>`;
 }
@@ -3079,35 +3506,214 @@ function copyEmailQuote() {
     });
 }
 
-function printPDF() {
-  const overlay = document.getElementById('modal-pdf');
-  const footer  = overlay.querySelector('.modal-footer');
-  overlay.style.background = 'white';
-  footer.style.display = 'none';
-  const q = window._currentPDFQuote || getFormData();
+/* ── Shared print engine ─────────────────────────────────────────────────
+   Handles DOM manipulation directly via inline styles so behaviour is
+   identical in every browser regardless of how @media print is handled.
+   ──────────────────────────────────────────────────────────────────── */
+function _executePrint(title) {
+  const overlay  = document.getElementById('modal-pdf');
+  const modal    = overlay.querySelector('.modal');
+  const footer   = overlay.querySelector('.modal-footer');
+  const app      = document.querySelector('.app');
+  const siblings = [...app.children].filter(el => el !== overlay);
   const oldTitle = document.title;
-  const customer = (q.customer||'Quote').replace(/\s+/g,'-').replace(/[^a-zA-Z0-9-]/g,'');
-  document.title = 'LNL3D-Quote-' + (q.quote_id || customer);
+
+  /* ── applyPrintState ───────────────────────────────────────────────────
+     Called once directly (Chrome sync path) AND registered as beforeprint
+     handler (Firefox / Safari async path).  Idempotent — safe to call twice.
+  ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── */
+  function applyPrintState() {
+    // Body background (overrides dark theme in print)
+    document.body.style.setProperty('background', '#fff', 'important');
+    // Hide all .app siblings of the PDF modal
+    siblings.forEach(el => el.style.setProperty('display', 'none', 'important'));
+    // Flatten .app to block so it doesn't flex-shrink the modal
+    app.style.setProperty('display', 'block', 'important');
+    app.style.setProperty('padding', '0',     'important');
+    // Convert the fixed overlay to a static full-page document block
+    overlay.style.setProperty('position',   'static', 'important');
+    overlay.style.setProperty('display',    'block',  'important');
+    overlay.style.setProperty('background', '#fff',   'important');
+    overlay.style.setProperty('opacity',    '1',      'important');
+    // Make the inner modal card fill the full page width with no clipping
+    modal.style.setProperty('min-width',  '100%',    'important');
+    modal.style.setProperty('max-width',  '100%',    'important');
+    modal.style.setProperty('max-height', 'none',    'important'); // remove 90vh cap
+    modal.style.setProperty('height',     'auto',    'important'); // let content dictate height
+    modal.style.setProperty('overflow',   'visible', 'important'); // don't clip scrolled content
+    modal.style.setProperty('box-shadow', 'none',    'important');
+    modal.style.setProperty('border',     'none',    'important');
+    modal.style.setProperty('transform',  'none',    'important');
+    modal.style.setProperty('padding',    '0',       'important');
+    modal.style.setProperty('background', '#fff',    'important');
+    // Reset scroll so printing always starts from the top of page 1
+    modal.scrollTop   = 0;
+    overlay.scrollTop = 0;
+    // Hide the Close / Print / Save action buttons
+    footer.style.setProperty('display', 'none', 'important');
+  }
+
+  /* ── restorePrintState ─────────────────────────────────────────────────
+     Called from the afterprint event — fires after the dialog closes in
+     every browser, whether window.print() was sync or async.
+  ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── */
+  function restorePrintState() {
+    document.title = oldTitle;
+    document.body.style.removeProperty('background');
+    siblings.forEach(el => el.style.removeProperty('display'));
+    app.style.removeProperty('display');
+    app.style.removeProperty('padding');
+    overlay.style.removeProperty('position');
+    overlay.style.removeProperty('display');
+    overlay.style.removeProperty('background');
+    overlay.style.removeProperty('opacity');
+    modal.style.removeProperty('min-width');
+    modal.style.removeProperty('max-width');
+    modal.style.removeProperty('max-height');
+    modal.style.removeProperty('height');
+    modal.style.removeProperty('overflow');
+    modal.style.removeProperty('box-shadow');
+    modal.style.removeProperty('border');
+    modal.style.removeProperty('transform');
+    modal.style.removeProperty('padding');
+    modal.style.removeProperty('background');
+    footer.style.removeProperty('display');
+    // Clean up event listeners so they don't fire on future prints
+    window.removeEventListener('beforeprint', applyPrintState);
+    window.removeEventListener('afterprint',  restorePrintState);
+  }
+
+  // Register event handlers BEFORE calling window.print()
+  // beforeprint  → guaranteed to fire before browser renders print layout
+  // afterprint   → guaranteed to fire after dialog is closed / job submitted
+  window.addEventListener('beforeprint', applyPrintState);
+  window.addEventListener('afterprint',  restorePrintState);
+
+  // Apply state directly now too — handles Chrome's synchronous path where
+  // beforeprint fires inside window.print() and we want state ready immediately
+  applyPrintState();
+  document.title = title;
+
   window.print();
-  document.title = oldTitle;
-  overlay.style.background = '';
-  footer.style.display = '';
+  // ⚠️  Do NOT restore here — afterprint handles cleanup for all browsers
+}
+
+function printPDF() {
+  const q = window._currentPDFQuote || getFormData();
+  const customer = (q.customer||'Quote').replace(/\s+/g,'-').replace(/[^a-zA-Z0-9-]/g,'');
+  _executePrint('LNL3D-Quote-' + (q.quote_id || customer));
 }
 
 function savePDF() {
-  const overlay = document.getElementById('modal-pdf');
-  const footer  = overlay.querySelector('.modal-footer');
-  overlay.style.background = 'white';
-  footer.style.display = 'none';
   const q = window._currentPDFQuote || getFormData();
-  const oldTitle = document.title;
   const customer = (q.customer||'Quote').replace(/\s+/g,'-').replace(/[^a-zA-Z0-9-]/g,'');
   const quoteId  = q.quote_id || (fmtSerial(state.settings.next_serial) + '-' + customer);
-  document.title = 'LNL3D-Quote-' + quoteId;
-  window.print();
-  document.title = oldTitle;
-  overlay.style.background = '';
-  footer.style.display = '';
+  _executePrint('LNL3D-Quote-' + quoteId);
+}
+
+function exportInvoiceNinjaCSV() {
+  const q   = window._currentPDFQuote || getFormData();
+  const c   = calcFromQuoteData(q);
+  const s   = state.settings;
+
+  // Resolve final price: use quoted override if set, else suggested
+  const totalPrice = (parseFloat(q.quoted_price || 0) > 0)
+    ? parseFloat(q.quoted_price)
+    : c.suggested;
+  const qty        = Math.max(parseInt(q.quantity || 1), 1);
+  const unitPrice  = totalPrice / qty;
+
+  // Dates — use stored dates or today
+  const today    = new Date().toISOString().slice(0, 10);
+  const invDate  = q.date   || today;
+  const dueDate  = q.expiry || today;
+
+  // Invoice number — quote_id if logged, else a draft label
+  const invNum   = q.quote_id || ('DRAFT-' + fmtSerial(s.next_serial));
+
+  // Customer email — look up from customers list if available
+  const customer = state.customers
+    ? (state.customers.find(c => c.name === q.customer) || {})
+    : {};
+  const clientEmail = customer.email || '';
+
+  // Item description — use project name, fall back to filament
+  const itemProduct = q.project || q.description || q.filament || '';
+  const itemNotes   = q.description || '';
+
+  // CSV escaping: wrap value in quotes if it contains comma, quote, or newline
+  const esc = (v) => {
+    const str = (v === null || v === undefined) ? '' : String(v);
+    return (str.includes(',') || str.includes('"') || str.includes('\n'))
+      ? '"' + str.replace(/"/g, '""') + '"'
+      : str;
+  };
+
+  const headers = [
+    'Client Name','Client Email','Client Currency',
+    'Invoice Invoice Number','Invoice Amount','Payment Amount',
+    'Invoice PO Number','Invoice Date','Invoice Due Date',
+    'Invoice Terms','Invoice Footer','Invoice Public Notes','Invoice Private Notes',
+    'Invoice Uses Inclusive Taxes','Invoice Is Amount Discount','Invoice Discount','Invoice Partial/Deposit',
+    'Invoice Tax Name 1','Invoice Tax Name 2','Invoice Tax Name 3',
+    'Invoice Tax Rate 1','Invoice Tax Rate 2','Invoice Tax Rate 3',
+    'Item Tax Name 1','Item Tax Name 2','Item Tax Name 3',
+    'Item Tax Rate 1','Item Tax Rate 2','Item Tax Rate 3',
+    'Item Quantity','Item Cost','Item Product','Item Notes',
+    'Item Type','Item Tax Category','Item Product cost'
+  ];
+
+  const row = [
+    esc(q.customer || ''),          // Client Name
+    esc(clientEmail),               // Client Email
+    'USD',                          // Client Currency
+    esc(invNum),                    // Invoice Invoice Number
+    totalPrice.toFixed(2),          // Invoice Amount
+    '',                             // Payment Amount (unpaid on import)
+    '',                             // Invoice PO Number
+    invDate,                        // Invoice Date
+    dueDate,                        // Invoice Due Date
+    '',                             // Invoice Terms
+    '',                             // Invoice Footer
+    esc(q.notes || ''),             // Invoice Public Notes
+    '',                             // Invoice Private Notes
+    'FALSE',                        // Invoice Uses Inclusive Taxes
+    'FALSE',                        // Invoice Is Amount Discount
+    '0',                            // Invoice Discount
+    '0',                            // Invoice Partial/Deposit
+    '',                             // Invoice Tax Name 1
+    '',                             // Invoice Tax Name 2
+    '',                             // Invoice Tax Name 3
+    '0',                            // Invoice Tax Rate 1
+    '0',                            // Invoice Tax Rate 2
+    '0',                            // Invoice Tax Rate 3
+    '',                             // Item Tax Name 1
+    '',                             // Item Tax Name 2
+    '',                             // Item Tax Name 3
+    '0',                            // Item Tax Rate 1
+    '0',                            // Item Tax Rate 2
+    '0',                            // Item Tax Rate 3
+    qty,                            // Item Quantity
+    unitPrice.toFixed(2),           // Item Cost
+    esc(itemProduct),               // Item Product
+    esc(itemNotes),                 // Item Notes
+    '1',                            // Item Type (1 = product)
+    '1',                            // Item Tax Category
+    '0'                             // Item Product cost
+  ];
+
+  const csvContent = headers.join(',') + '\r\n' + row.join(',');
+  const filename   = 'LNL3D-' + invNum.replace(/[^a-zA-Z0-9-]/g, '-') + '.csv';
+
+  const a    = document.createElement('a');
+  a.href     = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
+  a.download = filename;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  toast('CSV exported — ' + filename);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -3163,6 +3769,31 @@ function renderSettings() {
     <td style="color:var(--green);font-size:12px;font-weight:600;font-family:var(--font-mono)">${cur2(m.spool_price/m.spool_kg)}/kg</td>
     <td><button class="btn btn-danger btn-sm" onclick="removeMaterialRow(${i})">✕</button></td>
   </tr>`).join('');
+
+  // Lead-time tiers (PDF Output panel)
+  const ltb = document.getElementById('lead-times-body');
+  if (ltb) {
+    const tiers = s.lead_times || [];
+    ltb.innerHTML = tiers.map((t,i) => `<tr>
+      <td style="min-width:110px"><input value="${t.range}"    data-i="${i}" data-f="range"    onchange="updateLeadTime(this)"></td>
+      <td><input value="${t.standard}" data-i="${i}" data-f="standard" onchange="updateLeadTime(this)"></td>
+      <td><input value="${t.rush}"     data-i="${i}" data-f="rush"     onchange="updateLeadTime(this)"></td>
+      <td><button class="btn btn-danger btn-sm" onclick="removeLeadTimeRow(${i})">✕</button></td>
+    </tr>`).join('');
+  }
+
+  // Post-processing services (PDF Output panel)
+  const psb = document.getElementById('postprocess-services-body');
+  if (psb) {
+    const services = s.postprocess_services || [];
+    psb.innerHTML = services.map((svc,i) => `<tr>
+      <td style="min-width:140px"><input value="${svc.name}" data-i="${i}" data-f="name" onchange="updatePostprocessService(this)"></td>
+      <td style="min-width:220px"><input value="${svc.desc}" data-i="${i}" data-f="desc" onchange="updatePostprocessService(this)" style="width:100%"></td>
+      <td><input type="number" step="0.01" value="${svc.price}" data-i="${i}" data-f="price" onchange="updatePostprocessService(this)"></td>
+      <td><input value="${svc.unit}" data-i="${i}" data-f="unit" onchange="updatePostprocessService(this)"></td>
+      <td><button class="btn btn-danger btn-sm" onclick="removePostprocessServiceRow(${i})">✕</button></td>
+    </tr>`).join('');
+  }
 }
 
 // Expose for inline onchange
@@ -3201,6 +3832,37 @@ function addMaterialRow() {
 }
 function removeMaterialRow(i) {
   state.settings.materials.splice(i,1);
+  renderSettings();
+}
+
+/* ── Lead-time tier CRUD (Process & Lead Times page data) ── */
+function updateLeadTime(el) {
+  const i = parseInt(el.dataset.i), f = el.dataset.f;
+  state.settings.lead_times[i][f] = el.value;
+}
+function addLeadTimeRow() {
+  if (!state.settings.lead_times) state.settings.lead_times = [];
+  state.settings.lead_times.push({range:'New tier', standard:'—', rush:'—'});
+  renderSettings();
+}
+function removeLeadTimeRow(i) {
+  state.settings.lead_times.splice(i,1);
+  renderSettings();
+}
+
+/* ── Post-processing service CRUD (Post-Processing Menu page data) ── */
+function updatePostprocessService(el) {
+  const i = parseInt(el.dataset.i), f = el.dataset.f;
+  const val = f==='price' ? (parseFloat(el.value)||0) : el.value;
+  state.settings.postprocess_services[i][f] = val;
+}
+function addPostprocessServiceRow() {
+  if (!state.settings.postprocess_services) state.settings.postprocess_services = [];
+  state.settings.postprocess_services.push({name:'New service', desc:'Describe the service.', price:10, unit:'per part'});
+  renderSettings();
+}
+function removePostprocessServiceRow(i) {
+  state.settings.postprocess_services.splice(i,1);
   renderSettings();
 }
 
