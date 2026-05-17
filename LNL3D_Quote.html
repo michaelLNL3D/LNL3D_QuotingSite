@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LNL3D — Quote System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════════════════
    DESIGN TOKENS
@@ -34,8 +34,8 @@
   --cyan:     #39d0d8;
   --orange:   #ff9f43;
 
-  --font-head: 'Syne', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
+  --font-head: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Inter', sans-serif;
   --font-mono: 'DM Mono', monospace;
 
   --rad:  6px;
@@ -232,6 +232,25 @@ input, select, textarea { font-family: var(--font-body); }
   display: flex; align-items: center; gap: 8px;
 }
 .form-section:first-child { margin-top: 0; }
+
+/* Custom Line Items */
+.form-row-custom-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto auto auto;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.form-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text2);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.form-checkbox input[type="checkbox"] { cursor: pointer; accent-color: var(--accent); }
 
 /* Tables */
 .table-wrap { overflow-x: auto; border-radius: var(--rad2); border: 1px solid var(--border); }
@@ -439,7 +458,7 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 .pdf-header { border-bottom: 2px solid #111827; display: flex; justify-content: space-between; align-items: center; padding: 28px 40px; }
 .pdf-header-left {}
 .pdf-word-quote { font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: #9ca3af; margin-bottom: 10px; }
-.pdf-company-name { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: #111827; line-height: 1; letter-spacing: -1px; }
+.pdf-company-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 28px; font-weight: 800; color: #111827; line-height: 1; letter-spacing: -1px; }
 .pdf-header-right { text-align: right; }
 .pdf-quote-id { font-family: 'DM Mono', monospace; font-size: 13px; color: #111827; font-weight: 500; }
 .pdf-quote-date { font-size: 11px; color: #9ca3af; margin-top: 4px; }
@@ -484,7 +503,7 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 /* Price block */
 .pdf-price-block { margin-top: 24px; border-top: 2px solid #111827; padding-top: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
 .pdf-price-block-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #6b7280; margin-bottom: 6px; }
-.pdf-price-block-amount { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: #111827; letter-spacing: -1px; line-height: 1; }
+.pdf-price-block-amount { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 32px; font-weight: 800; color: #111827; letter-spacing: -1px; line-height: 1; }
 .pdf-price-block-perunit { font-size: 12px; color: #9ca3af; margin-top: 4px; font-family: 'DM Mono', monospace; }
 .pdf-price-block-right { text-align: right; }
 .pdf-validity { font-size: 11px; color: #6b7280; font-style: italic; margin-top: 6px; }
@@ -539,6 +558,19 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 .pdf-faq-item { border-left: 3px solid #2563eb; padding: 8px 10px; background: #f9fafb; border-radius: 0 4px 4px 0; }
 .pdf-faq-q { font-size: 11px; font-weight: 700; color: #111827; margin-bottom: 3px; }
 .pdf-faq-a { font-size: 10px; color: #374151; line-height: 1.5; }
+
+/* ── Quality Guide Page ─────────────────────────────────────── */
+.pdf-quality-header { display: flex; align-items: center; gap: 14px; border-bottom: 2px solid #e5e7eb; padding-bottom: 14px; margin-bottom: 14px; }
+.pdf-quality-header-title { font-size: 18px; font-weight: 700; color: #111827; }
+.pdf-quality-header-sub   { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.pdf-quality-intro { font-size: 11px; color: #374151; margin: 0 0 14px; line-height: 1.5; background: #f9fafb; border-left: 3px solid #2563eb; padding: 8px 10px; border-radius: 0 4px 4px 0; }
+.pdf-quality-graphic { width: 100%; height: 110px; margin: 0 0 18px; display: block; }
+.pdf-quality-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pdf-quality-card { border: 1px solid #e5e7eb; border-radius: 4px; padding: 10px 12px; }
+.pdf-quality-card-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700; color: #111827; }
+.pdf-quality-card-layer { font-family: 'DM Mono', monospace; font-size: 10px; color: #2563eb; margin: 2px 0 6px; }
+.pdf-quality-card-desc { font-size: 10px; color: #374151; line-height: 1.45; }
+.pdf-quality-card-impact { margin-top: 6px; font-size: 10px; color: #6b7280; font-style: italic; }
 
 /* ── Material Guide Page ───────────────────────────────────── */
 .pdf-mat-page { page-break-before: always; padding: 28px 32px 0; }
@@ -644,6 +676,13 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
   .pdf-faq-item         { padding: 5px 8px !important; }
   .pdf-faq-q            { margin-bottom: 2px !important; }
   .pdf-faq-a            { line-height: 1.4 !important; }
+
+  /* ── Quality Guide page ─────────────────────────────────────────────── */
+  .pdf-quality-header   { padding-bottom: 10px !important; margin-bottom: 10px !important; }
+  .pdf-quality-intro    { margin-bottom: 10px !important; }
+  .pdf-quality-graphic  { height: 90px !important; margin-bottom: 12px !important; }
+  .pdf-quality-grid     { gap: 8px !important; }
+  .pdf-quality-card     { padding: 8px 10px !important; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -699,6 +738,19 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 }
 .history-item:last-child { border-bottom: none; }
 .history-arrow { color: var(--text3); margin: 0 4px; }
+
+/* ── Revision history in drawer ── */
+.drawer-rev-list { display:flex; flex-direction:column; gap:6px; }
+.drawer-rev-row  { display:grid; grid-template-columns: 1fr auto auto; align-items:center; gap:10px;
+                   padding:8px 10px; background:var(--bg3); border-radius:var(--rad);
+                   border:1px solid var(--border); cursor:pointer; transition:background .15s; }
+.drawer-rev-row:hover { background:var(--bg2); }
+.drawer-rev-meta { display:flex; flex-direction:column; gap:2px; }
+.drawer-rev-tag  { font-size:10px; font-weight:700; color:var(--accent2); text-transform:uppercase; letter-spacing:.4px; }
+.drawer-rev-time { font-size:11px; color:var(--text3); }
+.drawer-rev-price { font-family:var(--font-mono); font-size:13px; font-weight:600; color:var(--text); }
+.rev-badge { display:inline-block; font-size:10px; padding:1px 5px; border-radius:8px;
+             background:#e0e7ff; color:#3730a3; font-weight:600; vertical-align:middle; margin-left:4px; }
 </style>
 </head>
 <body>
@@ -877,7 +929,7 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
           <input class="form-input" type="number" id="q-weight" value="0" min="0" step="0.01" oninput="calcQuote()">
         </div>
       </div>
-      <div class="form-row form-row-2" style="margin-top:12px">
+      <div class="form-row form-row-3" style="margin-top:12px">
         <div class="form-group">
           <label class="form-label" style="display:flex;align-items:center;justify-content:space-between">
             Print Time
@@ -894,6 +946,12 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
             <option value="5">5 – Moderate</option><option value="6">6</option>
             <option value="7">7</option><option value="8">8</option>
             <option value="9">9</option><option value="10">10 – Very Complex</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Quality</label>
+          <select class="form-select" id="q-quality" onchange="calcQuote()">
+            <!-- options rendered dynamically by renderQualityOptions() -->
           </select>
         </div>
       </div>
@@ -985,6 +1043,10 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
         </div>
       </div>
 
+      <div class="form-section">★ Custom Line Items</div>
+      <div id="custom-items-container"></div>
+      <button type="button" class="btn btn-ghost btn-sm" onclick="addCustomItem()" style="margin-bottom:8px">+ Add Line Item</button>
+
     </div><!-- /quote-form -->
 
     <!-- Right: sidebar -->
@@ -1001,6 +1063,7 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
         <div class="cost-row"><span class="cost-row-label">Post Labor</span><span class="cost-row-value" id="p-post">$0.00</span></div>
         <div class="cost-row"><span class="cost-row-label">Finishing</span><span class="cost-row-value" id="p-fin">$0.00</span></div>
         <div class="cost-row"><span class="cost-row-label">Shipping</span><span class="cost-row-value" id="p-ship">$0.00</span></div>
+        <div class="cost-row" id="p-custom-row" style="display:none"><span class="cost-row-label">Custom Items</span><span class="cost-row-value" id="p-custom">$0.00</span></div>
         <div class="cost-row" style="border-top:2px solid var(--border2)">
           <span class="cost-row-label" style="font-size:11px;text-transform:uppercase">Fail Rate</span>
           <span class="cost-row-value text-yellow" id="p-fail">0.0%</span>
@@ -1017,6 +1080,8 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
           <span class="cost-row-label" style="color:var(--green);font-weight:700">Suggested</span>
           <span class="cost-row-value green" id="p-suggested" style="font-size:15px;font-weight:700">$0.00</span>
         </div>
+        <div class="cost-row" id="p-tax-row" style="display:none"><span class="cost-row-label" style="color:var(--text2)">Tax</span><span class="cost-row-value" id="p-tax" style="color:var(--text2)">$0.00</span></div>
+        <div class="cost-row" id="p-total-tax-row" style="display:none"><span class="cost-row-label" style="color:var(--green);font-weight:700">Total w/ Tax</span><span class="cost-row-value green" id="p-total-tax" style="font-size:14px;font-weight:700">$0.00</span></div>
         <div class="cost-row" style="background:#1a0a00">
           <span class="cost-row-label" style="color:var(--orange)">Quoted Price</span>
           <span class="cost-row-value orange" id="p-quoted" style="font-size:15px;font-weight:700">—</span>
@@ -1173,6 +1238,8 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
           <div class="form-group"><label class="form-label">Max Failure Rate Cap (%)</label><input class="form-input" id="s-maxfail" type="number" step="0.1"></div>
           <div class="form-group"><label class="form-label">Min Markup Floor (×)</label><input class="form-input" id="s-minmarkup" type="number" step="0.01"></div>
           <div class="form-group"><label class="form-label">Company Name</label><input class="form-input" id="s-company" type="text"></div>
+          <div class="form-group"><label class="form-label">Sales Tax Rate (%)</label><input class="form-input" id="s-taxrate" type="number" min="0" step="0.01" placeholder="e.g. 7 for 7%"></div>
+          <div class="form-group" style="align-self:end;padding-bottom:8px"><label class="form-checkbox"><input type="checkbox" id="s-ship-taxable"> Tax applies to shipping</label></div>
         </div>
       </div>
 
@@ -1245,6 +1312,20 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
             </table>
           </div>
           <button class="btn btn-ghost btn-sm mt-8" onclick="addPostprocessServiceRow()">+ Add Service</button>
+        </div>
+
+        <hr class="divider" style="margin-top:20px">
+
+        <!-- Quality tiers (Quality Guide PDF page + quote form dropdown) -->
+        <div style="margin-top:16px">
+          <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Quality Tiers</div>
+          <div class="table-wrap" style="border:none">
+            <table class="edit-table" id="quality-tiers-table">
+              <thead><tr><th style="min-width:100px">Name</th><th>Layer (mm)</th><th>Multiplier</th><th style="min-width:220px">Description</th><th></th></tr></thead>
+              <tbody id="quality-tiers-body"></tbody>
+            </table>
+          </div>
+          <button class="btn btn-ghost btn-sm mt-8" onclick="addQualityTier()">+ Add Tier</button>
         </div>
       </div>
 
@@ -1333,6 +1414,9 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none">
           <input type="checkbox" id="pdf-toggle-faq" checked onchange="onPdfToggleChange()"> FAQ
         </label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none">
+          <input type="checkbox" id="pdf-toggle-quality" checked onchange="onPdfToggleChange()"> Quality Guide
+        </label>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center">
         <button class="btn btn-ghost" onclick="closeModal('modal-pdf')">✕ Close</button>
@@ -1372,6 +1456,18 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="confirmStatusNote(false)">Skip</button>
       <button class="btn btn-primary" onclick="confirmStatusNote(true)">Save Note</button>
+    </div>
+  </div>
+</div>
+
+<!-- Revision view modal (read-only snapshot) -->
+<div class="modal-overlay" id="modal-revision-view">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-title" id="rev-modal-title">Revision</div>
+    <div class="modal-sub" id="rev-modal-sub">Read-only snapshot</div>
+    <div id="rev-modal-body" style="background:var(--bg3);border-radius:var(--rad);padding:14px;font-size:13px;line-height:1.7"></div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="closeModal('modal-revision-view')">Close</button>
     </div>
   </div>
 </div>
@@ -1559,6 +1655,8 @@ const DEFAULTS = {
     max_fail: 0.50,
     min_markup: 1.20,
     min_fee: 5.00,
+    tax_rate: 0,
+    ship_taxable: true,
     currency: '$',
     next_serial: 1,
     discounts: [
@@ -1602,6 +1700,12 @@ const DEFAULTS = {
       { name: 'Threaded inserts', price:  2, unit: 'per insert', desc: 'Heat-set brass inserts (M3 / M4 / M5).' },
       { name: 'Assembly',         price: 60, unit: 'per hour',   desc: 'Multi-part assembly with fasteners or adhesive.' },
       { name: 'Color matching',   price: 40, unit: 'flat fee',   desc: 'Custom-mixed paint to your sample / Pantone.' },
+    ],
+    quality_tiers: [
+      { name: 'Draft',      layer_mm: 0.30, multiplier: 0.85, desc: 'Fast turnaround for prototypes & form-fit checks. Visible layer lines.' },
+      { name: 'Standard',   layer_mm: 0.20, multiplier: 1.00, desc: 'Balanced speed and finish. Recommended for most functional parts.' },
+      { name: 'Fine',       layer_mm: 0.16, multiplier: 1.15, desc: 'Smoother surface, reduced stair-stepping on curves. Good for display parts.' },
+      { name: 'Ultra-fine', layer_mm: 0.12, multiplier: 1.35, desc: 'Near-glassy surface on flat planes; minimal layer lines. Premium finish.' },
     ],
   },
   quotes: []
@@ -1898,6 +2002,8 @@ function calcFromQuoteData(q) {
   const complexity = parseFloat(q.complexity || 1);
   const qty        = Math.max(parseInt(q.quantity || 1), 1);
   const rush       = parseFloat(q.rush || 1.0);
+  const qTier      = (s.quality_tiers || []).find(t => t.name === (q.quality || 'Standard'));
+  const quality    = qTier ? qTier.multiplier : 1.0;
   const prepMin    = (parseFloat(q.prep_model||0) + parseFloat(q.prep_slice||0));
   const postMin    = (parseFloat(q.post_remove||0) + parseFloat(q.post_support||0) + parseFloat(q.post_extra||0));
   const finishing  = (parseFloat(q.fin_sand||0) + parseFloat(q.fin_paint||0) + parseFloat(q.fin_hardware||0) + parseFloat(q.fin_other||0));
@@ -1932,35 +2038,53 @@ function calcFromQuoteData(q) {
   const finPP  = finishing / qty;
   const shipPP = shipping / qty;
 
+  // Custom line items
+  const customItems   = Array.isArray(q.custom_items) ? q.custom_items : [];
+  const customTotal   = customItems.reduce((sum, it) => sum + parseFloat(it.amount||0), 0);
+  const customTaxable = customItems.reduce((sum, it) => sum + (it.taxable ? parseFloat(it.amount||0) : 0), 0);
+  const customPP      = customTotal / qty;
+
   // Cost per piece (no min_fee floor - that applies to price not cost)
-  const costPP = machinePP + laborPP + finPP + shipPP;
+  const costPP = machinePP + laborPP + finPP + shipPP + customPP;
 
   // Markup & pricing
   const baseMarkup = getMarkupForQty(qty);
-  const markup = baseMarkup * rush;
+  const markup = baseMarkup * rush * quality;
   const suggested = Math.max(costPP * qty * markup, s.min_fee);
+
+  // Tax computation
+  const taxRate     = parseFloat(s.tax_rate || 0);
+  const shipTaxable = !!s.ship_taxable;
+  // Taxable base: machine + finishing + (shipping if enabled) + taxable custom items. Labor excluded.
+  const taxableCostPP   = machinePP + finPP + (shipTaxable ? shipPP : 0) + (customTaxable / qty);
+  const taxableSubtotal = taxableCostPP * qty * markup;
+  const taxAmount       = taxableSubtotal * taxRate;
+  const suggestedWithTax = suggested + taxAmount;
   const quotedRaw = parseFloat(q.quoted_price || 0);
   const quoted = quotedRaw > 0 ? quotedRaw : 0;
 
   const pricePP    = suggested / qty;
-  const profitPP   = Math.max(pricePP - costPP, 0);
-  const margin     = pricePP > 0 ? Math.max((pricePP - costPP) / pricePP, 0) : 0;
+  const profitPP   = pricePP - costPP;
+  const margin     = pricePP > 0 ? (pricePP - costPP) / pricePP : 0;
   const costTotal  = costPP * qty;
-  const totalProfit = quoted > 0 ? Math.max(quoted - costTotal, 0) : Math.max(suggested - costTotal, 0);
+  const totalProfit = (quoted > 0 ? quoted : suggested) - costTotal;
 
   // Pricing schedule for all tiers
   const schedule = state.settings.discounts.map(tier => {
-    const tQty  = Math.max(tier.qty, 1);
-    const tMkup = Math.max(tier.markup, s.min_markup) * rush;
+    const tQty     = Math.max(tier.qty, 1);
+    const tMkup    = Math.max(tier.markup, s.min_markup) * rush * quality;
     const tPrepPP  = (prepLabor * (1 + fail/4)) / tQty;
     const tFinPP   = finishing / tQty;
     const tShipPP  = shipping / tQty;
-    const tCostPP  = machinePP + tPrepPP + postPP + tFinPP + tShipPP;
+    const tCustomPP = customTotal / tQty;
+    const tCostPP  = machinePP + tPrepPP + postPP + tFinPP + tShipPP + tCustomPP;
     const tPriceRaw = tCostPP * tMkup;
     const tTotal   = Math.max(tPriceRaw * tQty, s.min_fee);
     const tPricePP = tTotal / tQty;
-    const tMargin  = tPricePP > 0 ? Math.max((tPricePP - tCostPP) / tPricePP, 0) : 0;
-    return { qty: tier.qty, markup: tMkup, costPP: tCostPP, pricePP: tPricePP, total: tTotal, margin: tMargin };
+    const tMargin  = tPricePP > 0 ? (tPricePP - tCostPP) / tPricePP : 0;
+    const tTaxablePP  = machinePP + postPP + tFinPP + (shipTaxable ? tShipPP : 0) + (customTaxable / tQty);
+    const tTaxAmount  = tTaxablePP * tQty * tMkup * taxRate;
+    return { qty: tier.qty, markup: tMkup, costPP: tCostPP, pricePP: tPricePP, total: tTotal, margin: tMargin, taxAmount: tTaxAmount, totalWithTax: tTotal + tTaxAmount };
   });
 
   // Material comparison for PLA+, PETG, PETG-CF, ABS
@@ -1969,7 +2093,7 @@ function calcFromQuoteData(q) {
     const m2 = getMaterial(mname);
     if (!m2) return null;
     const fc2   = weightKg * (m2.spool_price / m2.spool_kg);
-    const fail2 = Math.min(s.base_fail + ((complexity + m2.complexity)/2)*s.base_fail, s.max_fail);
+    const fail2 = Math.min(s.base_fail + ((complexity + m2.complexity - 2) / 18) * (s.max_fail - s.base_fail), s.max_fail);
     const mach2 = (fc2 + suppCost + elecCost + deprCost + consumables) * (1 + fail2);
     const prep2 = (prepLabor * (1 + fail2/4)) / qty;
     const post2 = postLabor * (1 + fail2);
@@ -1982,8 +2106,10 @@ function calcFromQuoteData(q) {
   return {
     filamentCost, suppCost, elecCost, deprCost, consumables,
     prepLabor, postLabor, finishing, shipping,
+    customItems, customTotal, customTaxable,
     fail, machinePP, laborPP, costPP, baseMarkup, markup,
     suggested, quoted, pricePP, profitPP, margin, costTotal, totalProfit,
+    taxRate, taxAmount, taxableSubtotal, suggestedWithTax,
     schedule, matComparison, qty, rush
   };
 }
@@ -2047,6 +2173,18 @@ function showTab(tab) {
 /* ═══════════════════════════════════════════════════════════════
    QUOTE FORM
 ═══════════════════════════════════════════════════════════════ */
+function renderQualityOptions() {
+  const sel = document.getElementById('q-quality');
+  if (!sel) return;
+  const current = sel.value;
+  sel.innerHTML = (state.settings.quality_tiers || []).map(t =>
+    `<option value="${t.name}">${t.name} — ${t.layer_mm}mm (${t.multiplier}×)</option>`
+  ).join('');
+  // Restore selection if the tier still exists, else fall back to Standard
+  if ([...sel.options].some(o => o.value === current)) sel.value = current;
+  else sel.value = (state.settings.quality_tiers.find(t => t.name === 'Standard') || state.settings.quality_tiers[0] || {name:''}).name;
+}
+
 function populateSelects() {
   const pSel = document.getElementById('q-printer');
   const fSel = document.getElementById('q-filament');
@@ -2054,6 +2192,7 @@ function populateSelects() {
   pSel.innerHTML = state.settings.printers.map(p => `<option>${p.name}</option>`).join('');
   fSel.innerHTML = state.settings.materials.map(m => `<option>${m.name}</option>`).join('');
   sfSel.innerHTML = '<option value="">None</option>' + state.settings.materials.map(m => `<option>${m.name}</option>`).join('');
+  renderQualityOptions();
 }
 
 function getFormData() {
@@ -2065,6 +2204,7 @@ function getFormData() {
     expiry:           document.getElementById('q-expiry').value,
     status:           document.getElementById('q-status').value,
     rush:             document.getElementById('q-rush').value,
+    quality:          document.getElementById('q-quality').value,
     notes:            document.getElementById('q-notes').value,
     printer:          document.getElementById('q-printer').value,
     filament:         document.getElementById('q-filament').value,
@@ -2087,6 +2227,7 @@ function getFormData() {
     ship_pack:        document.getElementById('q-ship-pack').value,
     ship_cost:        document.getElementById('q-ship-cost').value,
     consumables:      document.getElementById('q-consumables').value,
+    custom_items:     customItemsBuffer.map(x => ({...x})),
   };
 }
 
@@ -2094,7 +2235,7 @@ function setFormData(q) {
   const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val||''; };
   set('q-customer', q.customer); set('q-project', q.project||''); set('q-description', q.description);
   set('q-date', q.date); set('q-expiry', q.expiry);
-  set('q-status', q.status||'Quoting'); set('q-rush', q.rush||'1.0');
+  set('q-status', q.status||'Quoting'); set('q-rush', q.rush||'1.0'); set('q-quality', q.quality||'Standard');
   set('q-notes', q.notes); set('q-printer', q.printer);
   set('q-filament', q.filament); set('q-weight', q.weight_g||0);
   set('q-printtime', q.print_time); set('q-complexity', q.complexity||1);
@@ -2108,6 +2249,8 @@ function setFormData(q) {
   set('q-fin-hardware', q.fin_hardware||0); set('q-fin-other', q.fin_other||0);
   set('q-ship-pack', q.ship_pack||0); set('q-ship-cost', q.ship_cost||0);
   set('q-consumables', q.consumables||0);
+  customItemsBuffer = Array.isArray(q.custom_items) ? q.custom_items.map(x => ({...x})) : [];
+  renderCustomItems();
   calcQuote();
 }
 
@@ -2213,10 +2356,19 @@ function calcQuote() {
   setText('p-post',        cur(c.postLabor));
   setText('p-fin',         cur(c.finishing));
   setText('p-ship',        cur(c.shipping));
+  const customRow = document.getElementById('p-custom-row');
+  if (customRow) customRow.style.display = c.customTotal > 0 ? '' : 'none';
+  setText('p-custom',      cur(c.customTotal));
   setText('p-fail',        (c.fail*100).toFixed(1)+'%');
   setText('p-costpc',      cur(c.costPP));
   setText('p-markup',      c.markup.toFixed(2)+'×');
   setText('p-suggested',   cur(c.suggested));
+  const taxRow = document.getElementById('p-tax-row');
+  const totalTaxRow = document.getElementById('p-total-tax-row');
+  if (taxRow) taxRow.style.display = c.taxAmount > 0 ? '' : 'none';
+  if (totalTaxRow) totalTaxRow.style.display = c.taxAmount > 0 ? '' : 'none';
+  setText('p-tax',         `${(c.taxRate*100).toFixed(1)}% — ${cur(c.taxAmount)}`);
+  setText('p-total-tax',   cur(c.suggestedWithTax));
   setText('p-quoted',      c.quoted > 0 ? cur(c.quoted) : '—');
   setText('p-profitpc',    cur(c.profitPP));
   setText('p-margin',      (c.margin*100).toFixed(1)+'%');
@@ -2317,28 +2469,40 @@ function confirmLogQuote() {
 }
 
 function confirmUpdateQuote() {
-  closeModal('modal-update');
-  const q = getFormData();
-  const c = calcFromQuoteData(q);
   const idx = state.quotes.findIndex(x => x.serial === currentEditSerial);
   if (idx < 0) { toast('Quote not found', 'error'); return; }
+  const old = state.quotes[idx];
+  const q = getFormData();
+  const c = calcFromQuoteData(q);
+
+  // ─── Snapshot the OLD state as a revision before overwriting ──────────
+  const priorRevisions = (old._revisions || []).slice();
+  const { _revisions: _, ...oldWithoutNested } = old;
+  priorRevisions.push({
+    revision: priorRevisions.length + 1,
+    snapshot_at: new Date().toISOString(),
+    ...oldWithoutNested,
+  });
 
   state.quotes[idx] = {
     ...q,
-    serial: state.quotes[idx].serial,
-    quote_id: state.quotes[idx].quote_id,
-    logged_at: state.quotes[idx].logged_at,
-    updated_at: new Date().toISOString(),
-    calc_cost_pp: c.costPP,
+    serial:         old.serial,
+    quote_id:       old.quote_id,
+    logged_at:      old.logged_at,
+    updated_at:     new Date().toISOString(),
+    status_history: old.status_history || [],
+    _revisions:     priorRevisions,
+    calc_cost_pp:   c.costPP,
     calc_suggested: c.suggested,
-    calc_margin: c.margin,
-    calc_profit: c.totalProfit,
+    calc_margin:    c.margin,
+    calc_profit:    c.totalProfit,
   };
   saveState();
-  toast(`Quote #${fmtSerial(currentEditSerial)} updated`);
+  closeModal('modal-update');
   currentEditSerial = null;
+  toast(`Quote #${fmtSerial(old.serial)} updated · revision ${priorRevisions.length} saved`);
+  renderLog();
   clearQuoteForm();
-  showTab('log');
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2373,7 +2537,7 @@ function renderLog() {
     const qprice = parseFloat(q.quoted_price||0);
     return `<tr class="log-row-clickable" onclick="showQuickView(${q.serial})">
       <td class="td-mono">${fmtSerial(q.serial)}</td>
-      <td class="td-mono" style="font-size:11px">${q.quote_id||'—'}</td>
+      <td class="td-mono" style="font-size:11px">${q.quote_id||'—'}${(q._revisions && q._revisions.length) ? ` <span class="rev-badge" title="${q._revisions.length} prior revision${q._revisions.length>1?'s':''}">+${q._revisions.length}</span>` : ''}</td>
       <td style="white-space:nowrap;font-size:12px">${q.date||'—'}</td>
       <td style="font-weight:500"><span class="cust-name-link" onclick="event.stopPropagation();openCustByName('${(q.customer||'').replace(/'/g,"\\'")}'">${q.customer||'—'}</span>${q.project?`<br><span style='font-size:11px;color:var(--text3)'>${q.project}</span>`:''}</td>
       <td style="color:var(--text2);font-size:12px">${q.description||'—'}</td>
@@ -2409,11 +2573,15 @@ function reloadQuote(serial) {
 
 function exportCSV() {
   const cols = ['serial','date','expiry','customer','description','status','quantity','filament','weight_g','print_time','printer','quoted_price','notes'];
-  const headers = ['#','Date','Expiry','Customer','Description','Status','Qty','Filament','Weight (g)','Print Time','Printer','Quoted Price','Notes'];
+  const headers = ['#','Date','Expiry','Customer','Description','Status','Qty','Filament','Weight (g)','Print Time','Printer','Quoted Price','Notes','Tax Rate (%)','Tax Amount','Total w/ Tax'];
   const escape = v => `"${String(v??'').replace(/"/g,'""')}"`;
-  const rows = [...state.quotes].sort((a,b)=>(a.serial||0)-(b.serial||0)).map(q =>
-    cols.map(c => escape(q[c]??'')).join(',')
-  );
+  const rows = [...state.quotes].sort((a,b)=>(a.serial||0)-(b.serial||0)).map(q => {
+    const calc = calcFromQuoteData(q);
+    const taxRatePct = ((state.settings.tax_rate||0)*100).toFixed(2);
+    const taxAmt = calc.taxAmount.toFixed(2);
+    const totalWithTax = calc.suggestedWithTax.toFixed(2);
+    return [...cols.map(c => escape(q[c]??'')), escape(taxRatePct), escape(taxAmt), escape(totalWithTax)].join(',');
+  });
   const csv = [headers.map(escape).join(','), ...rows].join('\n');
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
@@ -2489,6 +2657,8 @@ function showQuickView(serial) {
       <div class="drawer-section-label">Financials</div>
       ${row('Cost / pc', cur2d(c.costPP))}
       ${row('Suggested', cur2d(c.suggested), 'green')}
+      ${c.taxAmount > 0 ? row(`Tax (${(c.taxRate*100).toFixed(1)}%)`, cur2d(c.taxAmount)) : ''}
+      ${c.taxAmount > 0 ? row('Total w/ Tax', cur2d(c.suggestedWithTax), 'green') : ''}
       ${row('Quoted Price', qprice > 0 ? cur2d(qprice) : '—', qprice > 0 ? 'orange' : '')}
       ${row('Margin', (c.margin*100).toFixed(1)+'%')}
       ${row('Profit', cur2d(c.totalProfit), c.totalProfit >= 0 ? 'green' : 'red')}
@@ -2527,6 +2697,15 @@ function showQuickView(serial) {
       ${parseFloat(q.ship_pack||0) > 0 ? row('Packaging', cur2d(q.ship_pack)) : ''}
       ${parseFloat(q.ship_cost||0) > 0 ? row('Shipping',  cur2d(q.ship_cost)) : ''}
     </div>` : ''}
+    ${c.customItems && c.customItems.length > 0 ? `
+    <div class="drawer-section">
+      <div class="drawer-section-label">Custom Items</div>
+      ${c.customItems.map(it => row(
+        it.name + (it.taxable ? ' ¹' : '') + (!it.show_on_pdf ? ' <span style="color:var(--text3);font-size:10px">[internal]</span>' : ''),
+        cur2d(it.amount)
+      )).join('')}
+      ${c.customItems.some(it => it.taxable) ? `<div style="font-size:10px;color:var(--text3);padding:4px 0">¹ taxable</div>` : ''}
+    </div>` : ''}
     ${pricingRows ? `
     <div class="drawer-section">
       <div class="drawer-section-label">Pricing Schedule</div>
@@ -2549,6 +2728,27 @@ function showQuickView(serial) {
           ${h.note ? `<div style="color:var(--text2);font-size:11px;margin-top:3px;padding-left:2px">${h.note}</div>` : ''}
         </div>`).join('')}
     </div>` : ''}
+    ${(() => {
+      const revs = q._revisions || [];
+      if (!revs.length) return '';
+      return `<div class="drawer-section">
+      <div class="drawer-section-label">Revisions (${revs.length})</div>
+      <div class="drawer-rev-list">
+        ${revs.slice().reverse().map(r => `
+        <div class="drawer-rev-row" onclick="showRevision(${q.serial}, ${r.revision})">
+          <div class="drawer-rev-meta">
+            <span class="drawer-rev-tag">Rev ${r.revision}</span>
+            <span class="drawer-rev-time">${new Date(r.snapshot_at).toLocaleString()}</span>
+          </div>
+          <div class="drawer-rev-price">
+            ${cur(r.calc_suggested || 0)}
+            ${r.quoted_price ? `<span style="color:var(--text3);font-size:11px"> · quoted ${cur(parseFloat(r.quoted_price))}</span>` : ''}
+          </div>
+          <button class="btn btn-ghost btn-sm">View →</button>
+        </div>`).join('')}
+      </div>
+    </div>`;
+    })()}
     <div style="padding:14px 20px 0;font-size:11px;color:var(--text3)">
       Logged ${q.logged_at ? new Date(q.logged_at).toLocaleString() : '—'}
       ${q.updated_at ? '<br>Updated ' + new Date(q.updated_at).toLocaleString() : ''}
@@ -2626,6 +2826,111 @@ function confirmStatusNote(saveNote) {
   renderLog();
   if (document.querySelector('#tab-dashboard:not(.hidden)')) renderDashboard();
   toast(`Quote #${fmtSerial(serial)} → ${newStatus}`);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REVISION VIEW
+═══════════════════════════════════════════════════════════════ */
+function showRevision(serial, revisionNum) {
+  const q = state.quotes.find(x => x.serial === serial);
+  if (!q) return;
+  const r = (q._revisions || []).find(x => x.revision === revisionNum);
+  if (!r) return;
+
+  // Run calc engine on snapshot data to get cost breakdown
+  const c   = calcFromQuoteData(r);
+  const s   = state.settings;
+  const qty = Math.max(parseInt(r.quantity || 1), 1);
+
+  // Individual prep costs (amortized per piece, lightly fail-adjusted)
+  const prepModelCost   = (parseFloat(r.prep_model  ||0) / 60) * s.skilled_labor      * (1 + c.fail/4) / qty;
+  const prepSliceCost   = (parseFloat(r.prep_slice  ||0) / 60) * s.skilled_labor      * (1 + c.fail/4) / qty;
+  // Individual post costs (per piece, fully fail-adjusted)
+  const postRemoveCost  = (parseFloat(r.post_remove ||0) / 60) * s.postprocess_labor  * (1 + c.fail);
+  const postSupportCost = (parseFloat(r.post_support||0) / 60) * s.postprocess_labor  * (1 + c.fail);
+  const postExtraCost   = (parseFloat(r.post_extra  ||0) / 60) * s.postprocess_labor  * (1 + c.fail);
+
+  // Machine cost line items (raw, before fail adjustment)
+  const failMult = 1 + c.fail;
+
+  const sec = (title, content) =>
+    `<div style="margin-bottom:12px">
+       <div style="font-family:var(--font-head);font-size:10px;font-weight:700;text-transform:uppercase;
+                   letter-spacing:1px;color:var(--text3);border-bottom:1px solid var(--border);
+                   padding-bottom:5px;margin-bottom:6px">${title}</div>
+       ${content}
+     </div>`;
+
+  // row: label | [detail in gray] | cost
+  const row = (label, cost, detail='', costCls='') =>
+    `<div style="display:flex;justify-content:space-between;align-items:baseline;padding:3px 0">
+       <span style="color:var(--text2);font-size:12px">${label}</span>
+       <span style="font-family:var(--font-mono);font-size:12px">
+         ${detail ? `<span style="color:var(--text3);margin-right:10px">${detail}</span>` : ''}
+         <span style="${costCls}">${cost}</span>
+       </span>
+     </div>`;
+
+  const rushLabel = {1.0:'Standard',1.25:'Light Rush',1.5:'Rush',1.75:'Priority',2.0:'Urgent'};
+  const qprice    = parseFloat(r.quoted_price || 0);
+  const finTotal  = parseFloat(r.fin_sand||0)+parseFloat(r.fin_paint||0)+parseFloat(r.fin_hardware||0)+parseFloat(r.fin_other||0);
+  const shipTotal = parseFloat(r.ship_pack||0)+parseFloat(r.ship_cost||0);
+
+  document.getElementById('rev-modal-body').innerHTML = `
+    ${sec('Quote Info',
+      row('Customer',    r.customer    || '—') +
+      row('Project',     r.project     || '—') +
+      row('Description', r.description || '—') +
+      row('Date',        r.date        || '—') +
+      row('Expiry',      r.expiry      || '—') +
+      row('Status',      r.status      || '—')
+    )}
+    ${sec('Financials',
+      row('Cost / pc',    cur(r.calc_cost_pp   || 0)) +
+      row('Suggested',    cur(r.calc_suggested || 0), '', 'color:var(--green)') +
+      row('Quoted Price', qprice > 0 ? cur(qprice) : '—', '', qprice > 0 ? 'color:var(--orange)' : '') +
+      row('Margin',       r.calc_margin != null ? (r.calc_margin * 100).toFixed(1) + '%' : '—') +
+      row('Profit',       cur(r.calc_profit || 0), '', parseFloat(r.calc_profit||0) >= 0 ? 'color:var(--green)' : 'color:var(--red)')
+    )}
+    ${sec('Machine Costs',
+      row('Filament',     cur(c.filamentCost * failMult), (r.weight_g||0)+'g') +
+      (c.suppCost > 0 ? row('Support Filament', cur(c.suppCost * failMult), (r.support_weight_g||0)+'g') : '') +
+      row('Electricity',  cur(c.elecCost  * failMult), r.print_time || '—') +
+      row('Depreciation', cur(c.deprCost  * failMult), r.printer    || '—') +
+      (parseFloat(r.consumables||0) > 0 ? row('Consumables', cur(c.consumables * failMult)) : '') +
+      row('Fail Rate',    (c.fail*100).toFixed(1)+'%')
+    )}
+    ${sec('Labor',
+      (parseFloat(r.prep_model  ||0) > 0 ? row('Model Prep',      cur(prepModelCost),   (r.prep_model  ||0)+'min') : row('Model Prep',      cur(0), '0min')) +
+      (parseFloat(r.prep_slice  ||0) > 0 ? row('Slicing',         cur(prepSliceCost),   (r.prep_slice  ||0)+'min') : row('Slicing',         cur(0), '0min')) +
+      row('Job Removal',      cur(postRemoveCost),  (r.post_remove ||0)+'min') +
+      row('Support Removal',  cur(postSupportCost), (r.post_support||0)+'min') +
+      row('Extra Post-Work',  cur(postExtraCost),   (r.post_extra  ||0)+'min')
+    )}
+    ${finTotal > 0 ? sec('Finishing',
+      (parseFloat(r.fin_sand    ||0) > 0 ? row('Sanding',  cur(r.fin_sand),     '', '') : '') +
+      (parseFloat(r.fin_paint   ||0) > 0 ? row('Painting', cur(r.fin_paint),    '', '') : '') +
+      (parseFloat(r.fin_hardware||0) > 0 ? row('Hardware', cur(r.fin_hardware), '', '') : '') +
+      (parseFloat(r.fin_other   ||0) > 0 ? row('Other',    cur(r.fin_other),    '', '') : '')
+    ) : ''}
+    ${shipTotal > 0 ? sec('Shipping',
+      (parseFloat(r.ship_pack||0) > 0 ? row('Packaging', cur(r.ship_pack), '', '') : '') +
+      (parseFloat(r.ship_cost||0) > 0 ? row('Shipping',  cur(r.ship_cost), '', '') : '')
+    ) : ''}
+    ${sec('Print Details',
+      row('Printer',    r.printer    || '—') +
+      row('Filament',   r.filament   || '—') +
+      (r.support_filament ? row('Support Material', r.support_filament) : '') +
+      row('Print Time', r.print_time || '—') +
+      row('Quantity',   r.quantity   || 1) +
+      row('Complexity', r.complexity || '—') +
+      row('Rush',       (r.rush||1) + '× — ' + (rushLabel[parseFloat(r.rush)] || ''))
+    )}
+    ${r.notes ? sec('Notes',
+      `<div style="font-size:12px;color:var(--text2);line-height:1.6">${r.notes}</div>`
+    ) : ''}
+  `;
+  openModal('modal-revision-view');
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -3022,6 +3327,7 @@ function renderPDFModal(q) {
     _t.postprocess                 ? buildPostProcessPage()              : '';
   const _materialsHtml = _t.materials ? buildMaterialsPage() : '';
   const _faqHtml       = _t.faq       ? buildFaqPage()       : '';
+  const _qualityHtml   = _t.quality   ? buildQualityPage()   : '';
 
   window._currentPDFQuote = q;
   document.getElementById('pdf-content').innerHTML = `
@@ -3109,11 +3415,28 @@ function renderPDFModal(q) {
       </div>
 
       <!-- Final price -->
+      ${c.customItems && c.customItems.filter(it => it.show_on_pdf).length > 0 ? `
+      <div class="pdf-section-label" style="margin-top:12px">Custom Items</div>
+      <div class="pdf-rows">
+        ${c.customItems.filter(it => it.show_on_pdf).map(it => `
+        <div class="pdf-row">
+          <div class="pdf-row-label">${it.name||'Item'}</div>
+          <div class="pdf-row-value">${cur(it.amount)}</div>
+        </div>`).join('')}
+      </div>` : ''}
+
       <div class="pdf-price-block" style="justify-content:flex-start;gap:40px">
         <div>
           <div class="pdf-price-block-label">${priceLabel}</div>
+          ${c.taxAmount > 0 ? `
+          <div style="font-size:12px;color:#6b7280;margin-bottom:4px">Subtotal: ${cur(displayPrice)}</div>
+          <div style="font-size:12px;color:#6b7280;margin-bottom:6px">Tax (${(c.taxRate*100).toFixed(1)}%): ${cur(c.taxAmount)}</div>
+          <div class="pdf-price-block-amount">${cur(displayPrice + c.taxAmount)}</div>
+          <div class="pdf-price-block-perunit">${cur((displayPrice + c.taxAmount) / Math.max(parseInt(q.quantity||1),1))} / pc (incl. tax)</div>
+          ` : `
           <div class="pdf-price-block-amount">${cur(displayPrice)} <span style="font-size:14px;font-weight:500;color:#6b7280;letter-spacing:0">+ tax</span></div>
           <div class="pdf-price-block-perunit">${cur(ppu)} / pc + tax</div>
+          `}
         </div>
 
       </div>
@@ -3123,7 +3446,7 @@ function renderPDFModal(q) {
     <!-- Footer -->
     <div class="pdf-footer-strip">
       <div class="pdf-footer-left">
-        ${q.expiry ? `Valid until ${q.expiry}. ` : ''}All prices exclude applicable taxes.
+        ${q.expiry ? `Valid until ${q.expiry}. ` : ''}${c.taxAmount > 0 ? `Tax included at ${(c.taxRate*100).toFixed(1)}%.` : 'All prices exclude applicable taxes.'}
       </div>
       <div class="pdf-footer-right" style="display:flex;align-items:center;gap:8px"><img src="${LOGO_URI}" alt="LNL3D" style="height:14px;width:auto;vertical-align:middle;">&nbsp;${q.quote_id||''}</div>
     </div>
@@ -3132,6 +3455,7 @@ function renderPDFModal(q) {
   ${_processServicesHtml}
   ${_materialsHtml}
   ${_faqHtml}
+  ${_qualityHtml}
   `;
 }
 
@@ -3148,6 +3472,7 @@ function getPdfPageToggles() {
     postprocess: get('pdf-toggle-postprocess', true),
     materials:   get('pdf-toggle-materials',   true),
     faq:         get('pdf-toggle-faq',         true),
+    quality:     get('pdf-toggle-quality',     true),
   };
 }
 
@@ -3426,6 +3751,88 @@ function buildFaqPage() {
   </div>`;
 }
 
+function buildQualityPage() {
+  const s = state.settings;
+  const tiers = s.quality_tiers || [];
+
+  // ── SVG layer-line graphic ───────────────────────────────────────────────
+  // 4 segments, each showing a terraced silhouette with decreasing step height.
+  // Step counts: Draft=5, Standard=9, Fine=14, Ultra-fine=22
+  const svgW = 520, svgH = 100;
+  const segW  = svgW / 4;
+  const baseY = svgH - 8;
+  const curveH = svgH - 20; // max height of the shape
+  const segSteps = [5, 9, 14, 22];
+  const segColor = ['#93c5fd','#60a5fa','#3b82f6','#2563eb'];
+
+  const buildSegment = (idx) => {
+    const steps  = segSteps[idx];
+    const x0     = idx * segW + 4;
+    const w      = segW - 8;
+    const stepW  = w / steps;
+    const stepH  = curveH / steps;
+    let path = `M ${x0} ${baseY}`;
+    for (let s = 0; s < steps; s++) {
+      const topY = baseY - stepH * (s + 1);
+      const leftX = x0 + stepW * s;
+      const rightX = leftX + stepW;
+      path += ` L ${leftX} ${topY} L ${rightX} ${topY}`;
+    }
+    path += ` L ${x0 + w} ${baseY} Z`;
+    return `<path d="${path}" fill="${segColor[idx]}" opacity="0.85"/>`;
+  };
+
+  const tierLabels = tiers.slice(0, 4).map((t, i) => {
+    const cx = i * segW + segW / 2;
+    return `<text x="${cx}" y="${svgH - 1}" text-anchor="middle" font-size="8" fill="#374151" font-family="DM Mono, monospace">${t.name}</text>`;
+  }).join('');
+
+  const segments = [0,1,2,3].map(buildSegment).join('');
+
+  const svgGraphic = `<svg class="pdf-quality-graphic" viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <rect x="0" y="0" width="${svgW}" height="${svgH}" fill="#f9fafb" rx="4"/>
+    ${segments}
+    ${tierLabels}
+    <text x="4" y="10" font-size="7" fill="#9ca3af" font-family="DM Mono, monospace">Heavy stair-stepping ←</text>
+    <text x="${svgW - 4}" y="10" text-anchor="end" font-size="7" fill="#9ca3af" font-family="DM Mono, monospace">→ Near-smooth surface</text>
+  </svg>`;
+
+  // ── Tier cards ────────────────────────────────────────────────────────────
+  const impactLabel = (m) => {
+    if (m < 1.0) return `${Math.round((1 - m) * 100)}% discount vs Standard`;
+    if (m === 1.0) return 'Standard pricing';
+    return `+${Math.round((m - 1) * 100)}% premium`;
+  };
+
+  const cards = tiers.map(t => `
+    <div class="pdf-quality-card">
+      <div class="pdf-quality-card-title">${t.name}</div>
+      <div class="pdf-quality-card-layer">${t.layer_mm} mm layer height</div>
+      <div class="pdf-quality-card-desc">${t.desc || ''}</div>
+      <div class="pdf-quality-card-impact">${impactLabel(t.multiplier)}</div>
+    </div>`).join('');
+
+  return `
+  <div class="pdf-doc pdf-page-extra">
+    <div class="pdf-quality-header">
+      <img src="${LOGO_URI}" alt="${s.company||'LNL3D'}" style="height:32px;width:auto;">
+      <div>
+        <div class="pdf-quality-header-title">Print Quality Guide</div>
+        <div class="pdf-quality-header-sub">Layer height options and their effect on surface finish — ${s.company||'LNL3D'}</div>
+      </div>
+    </div>
+    <div class="pdf-quality-intro">
+      Layer height is the thickness of each printed slice. Thinner layers produce smoother surfaces with less visible stair-stepping on curves — at the cost of longer print time. Choose the tier that best balances finish and budget for your application.
+    </div>
+    ${svgGraphic}
+    <div class="pdf-quality-grid">${cards}</div>
+    <div class="pdf-footer-strip" style="margin-top:14px">
+      <div class="pdf-footer-left">Not sure which quality tier is right for your part? Ask us — we're happy to advise.</div>
+      <div class="pdf-footer-right" style="display:flex;align-items:center;gap:8px"><img src="${LOGO_URI}" alt="${s.company||'LNL3D'}" style="height:14px;width:auto;vertical-align:middle;">&nbsp;${s.company||'LNL3D'} Solutions</div>
+    </div>
+  </div>`;
+}
+
 function copyEmailQuote() {
   const q = window._currentPDFQuote || getFormData();
   const s = state.settings;
@@ -3477,8 +3884,20 @@ function copyEmailQuote() {
     ].filter(Boolean).join('\n'),
     ``,
     divider,
-    `QUOTED PRICE: ${cur(price)} + tax`,
-    `Per unit:     ${cur(ppu)} / pc + tax`,
+    ...(c.customItems && c.customItems.filter(it => it.show_on_pdf).length > 0 ? [
+      `LINE ITEMS`,
+      ...c.customItems.filter(it => it.show_on_pdf).map(it => `  ${it.name||'Item'}: ${cur(it.amount)}`),
+      ``,
+    ] : []),
+    ...(c.taxAmount > 0 ? [
+      `SUBTOTAL:     ${cur(price)}`,
+      `TAX (${(c.taxRate*100).toFixed(1)}%):   ${cur(c.taxAmount)}`,
+      `TOTAL:        ${cur(price + c.taxAmount)}`,
+      `Per unit:     ${cur((price + c.taxAmount) / Math.max(parseInt(q.quantity||1),1))} / pc (incl. tax)`,
+    ] : [
+      `QUOTED PRICE: ${cur(price)} + tax`,
+      `Per unit:     ${cur(ppu)} / pc + tax`,
+    ]),
     divider,
     ``,
     scheduleLines,
@@ -3732,6 +4151,8 @@ function renderSettings() {
   document.getElementById('s-skilled').value     = s.skilled_labor;
   document.getElementById('s-postprocess').value = s.postprocess_labor;
   document.getElementById('s-minfee').value      = s.min_fee;
+  document.getElementById('s-taxrate').value     = (s.tax_rate || 0) * 100;
+  document.getElementById('s-ship-taxable').checked = !!s.ship_taxable;
   document.getElementById('s-basefail').value    = s.base_fail * 100;
   document.getElementById('s-maxfail').value     = s.max_fail * 100;
   document.getElementById('s-minmarkup').value   = s.min_markup;
@@ -3794,6 +4215,18 @@ function renderSettings() {
       <td><button class="btn btn-danger btn-sm" onclick="removePostprocessServiceRow(${i})">✕</button></td>
     </tr>`).join('');
   }
+
+  // Quality tiers (PDF Output panel + quote form dropdown)
+  const qb = document.getElementById('quality-tiers-body');
+  if (qb) {
+    qb.innerHTML = (s.quality_tiers || []).map((t,i) => `<tr>
+      <td style="min-width:100px"><input value="${t.name}" onchange="state.settings.quality_tiers[${i}].name=this.value;renderQualityOptions()"></td>
+      <td><input type="number" step="0.01" value="${t.layer_mm}" onchange="state.settings.quality_tiers[${i}].layer_mm=parseFloat(this.value)||0;renderQualityOptions()"></td>
+      <td><input type="number" step="0.01" value="${t.multiplier}" onchange="state.settings.quality_tiers[${i}].multiplier=parseFloat(this.value)||1.0;renderQualityOptions()"></td>
+      <td style="min-width:220px"><input value="${t.desc||''}" onchange="state.settings.quality_tiers[${i}].desc=this.value" style="width:100%"></td>
+      <td><button class="btn btn-danger btn-sm" onclick="state.settings.quality_tiers.splice(${i},1);renderSettings();renderQualityOptions()">✕</button></td>
+    </tr>`).join('');
+  }
 }
 
 // Expose for inline onchange
@@ -3818,6 +4251,44 @@ function removeDiscountRow(i) {
   state.settings.discounts.splice(i,1);
   renderSettings();
 }
+/* ── Custom Line Items ───────────────────────────────────────── */
+let customItemsBuffer = [];
+
+function escapeHtml(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function addCustomItem(item) {
+  customItemsBuffer.push(item || { name:'', amount:0, taxable:true, show_on_pdf:true });
+  renderCustomItems();
+  calcQuote();
+}
+
+function removeCustomItem(i) {
+  customItemsBuffer.splice(i, 1);
+  renderCustomItems();
+  calcQuote();
+}
+
+function renderCustomItems() {
+  const container = document.getElementById('custom-items-container');
+  if (!container) return;
+  container.innerHTML = customItemsBuffer.map((it, i) => `
+    <div class="form-row-custom-item">
+      <input class="form-input" placeholder="Item name (e.g. Design fee)"
+             value="${escapeHtml(it.name)}"
+             oninput="customItemsBuffer[${i}].name=this.value;calcQuote()">
+      <input class="form-input" type="number" min="0" step="0.01"
+             value="${parseFloat(it.amount||0).toFixed(2)}"
+             oninput="customItemsBuffer[${i}].amount=parseFloat(this.value||0);calcQuote()">
+      <label class="form-checkbox"><input type="checkbox" ${it.taxable?'checked':''}
+             onchange="customItemsBuffer[${i}].taxable=this.checked;calcQuote()"> Taxable</label>
+      <label class="form-checkbox"><input type="checkbox" ${it.show_on_pdf?'checked':''}
+             onchange="customItemsBuffer[${i}].show_on_pdf=this.checked"> PDF</label>
+      <button class="btn btn-danger btn-sm" onclick="removeCustomItem(${i})">✕</button>
+    </div>`).join('');
+}
+
 function addPrinterRow() {
   state.settings.printers.push({name:'New Printer', price:500, life:3000, service:200, energy:0.15});
   renderSettings();
@@ -3866,12 +4337,22 @@ function removePostprocessServiceRow(i) {
   renderSettings();
 }
 
+/* ── Quality tier CRUD (Quality Guide PDF page + form dropdown) ── */
+function addQualityTier() {
+  if (!state.settings.quality_tiers) state.settings.quality_tiers = [];
+  state.settings.quality_tiers.push({name:'New Tier', layer_mm:0.20, multiplier:1.0, desc:'Describe this quality tier.'});
+  renderSettings();
+  renderQualityOptions();
+}
+
 function saveSettings() {
   const s = state.settings;
   s.energy           = parseFloat(document.getElementById('s-energy').value)||0.26;
   s.skilled_labor    = parseFloat(document.getElementById('s-skilled').value)||22;
   s.postprocess_labor= parseFloat(document.getElementById('s-postprocess').value)||22;
   s.min_fee          = parseFloat(document.getElementById('s-minfee').value)||5;
+  s.tax_rate         = (parseFloat(document.getElementById('s-taxrate').value)||0) / 100;
+  s.ship_taxable     = document.getElementById('s-ship-taxable').checked;
   s.base_fail        = parseFloat(document.getElementById('s-basefail').value)/100||0.10;
   s.max_fail         = parseFloat(document.getElementById('s-maxfail').value)/100||0.50;
   s.min_markup       = parseFloat(document.getElementById('s-minmarkup').value)||1.20;
