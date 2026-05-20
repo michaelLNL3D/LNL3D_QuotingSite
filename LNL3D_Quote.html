@@ -2775,6 +2775,8 @@ function showQuickView(serial) {
   const row = (label, value, cls='') =>
     `<div class="drawer-row"><span class="drawer-row-label">${label}</span><span class="drawer-row-value ${cls}">${value}</span></div>`;
 
+  const row3col = (label, raw, price, priceCls='') => `<div class="drawer-row" style="display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center"><span class="drawer-row-label">${label}</span><span class="drawer-row-value" style="min-width:60px;text-align:right">${raw}</span><span class="drawer-row-value ${priceCls}" style="min-width:60px;text-align:right">${price}</span></div>`;
+
   const rushLabel = {1.0:'Standard',1.25:'Light Rush',1.5:'Rush',1.75:'Priority',2.0:'Urgent'};
   // Find the tier that actually applies to the current quantity (highest tier.qty <= qty)
   const currentQty = parseInt(q.quantity) || 1;
@@ -2805,17 +2807,20 @@ function showQuickView(serial) {
     ${c.taxAmount > 0 && c.taxBreakdown ? `
     <div class="drawer-section">
       <div class="drawer-section-label">Customer Charges (Tax Summary)</div>
-      <div style="font-size:10px;color:var(--text3);padding:2px 0 6px;text-transform:uppercase;letter-spacing:.5px">Taxable</div>
-      ${row('Machine',     cur2d(c.taxBreakdown.taxable.machine))}
-      ${row('Finishing',   cur2d(c.taxBreakdown.taxable.finishing))}
-      ${c.taxBreakdown.taxable.shipping > 0 ? row('Shipping', cur2d(c.taxBreakdown.taxable.shipping)) : ''}
-      ${c.taxBreakdown.taxable.custom   > 0 ? row('Custom Items', cur2d(c.taxBreakdown.taxable.custom)) : ''}
-      ${row('Taxable Subtotal', cur2d(c.taxBreakdown.taxable.subtotal), 'green')}
-      <div style="font-size:10px;color:var(--text3);padding:8px 0 6px;text-transform:uppercase;letter-spacing:.5px;border-top:1px solid var(--border);margin-top:6px">Non-Taxable</div>
-      ${row('Labor', cur2d(c.taxBreakdown.nonTaxable.labor))}
-      ${c.taxBreakdown.nonTaxable.shipping > 0 ? row('Shipping', cur2d(c.taxBreakdown.nonTaxable.shipping)) : ''}
-      ${c.taxBreakdown.nonTaxable.custom   > 0 ? row('Custom Items', cur2d(c.taxBreakdown.nonTaxable.custom)) : ''}
-      ${row('Non-Taxable Subtotal', cur2d(c.taxBreakdown.nonTaxable.subtotal))}
+      <div style="display:grid;grid-template-columns:1fr auto auto;gap:12px;padding:2px 0;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">
+        <span></span><span style="text-align:right;min-width:60px">Cost</span><span style="text-align:right;min-width:60px">Price</span>
+      </div>
+      <div style="font-size:10px;color:var(--text3);padding:4px 0 4px;text-transform:uppercase;letter-spacing:.5px">Taxable</div>
+      ${row3col('Machine',     cur2d(c.taxBreakdown.taxable.raw.machine),   cur2d(c.taxBreakdown.taxable.price.machine))}
+      ${row3col('Finishing',   cur2d(c.taxBreakdown.taxable.raw.finishing), cur2d(c.taxBreakdown.taxable.price.finishing))}
+      ${c.taxBreakdown.taxable.price.shipping > 0 ? row3col('Shipping',     cur2d(c.taxBreakdown.taxable.raw.shipping), cur2d(c.taxBreakdown.taxable.price.shipping)) : ''}
+      ${c.taxBreakdown.taxable.price.custom   > 0 ? row3col('Custom Items', cur2d(c.taxBreakdown.taxable.raw.custom),   cur2d(c.taxBreakdown.taxable.price.custom))   : ''}
+      ${row3col('Taxable Subtotal', cur2d(c.taxBreakdown.taxable.raw.subtotal), cur2d(c.taxBreakdown.taxable.price.subtotal), 'green')}
+      <div style="font-size:10px;color:var(--text3);padding:8px 0 4px;text-transform:uppercase;letter-spacing:.5px;border-top:1px solid var(--border);margin-top:6px">Non-Taxable</div>
+      ${row3col('Labor', cur2d(c.taxBreakdown.nonTaxable.raw.labor), cur2d(c.taxBreakdown.nonTaxable.price.labor))}
+      ${c.taxBreakdown.nonTaxable.price.shipping > 0 ? row3col('Shipping',     cur2d(c.taxBreakdown.nonTaxable.raw.shipping), cur2d(c.taxBreakdown.nonTaxable.price.shipping)) : ''}
+      ${c.taxBreakdown.nonTaxable.price.custom   > 0 ? row3col('Custom Items', cur2d(c.taxBreakdown.nonTaxable.raw.custom),   cur2d(c.taxBreakdown.nonTaxable.price.custom))   : ''}
+      ${row3col('Non-Taxable Subtotal', cur2d(c.taxBreakdown.nonTaxable.raw.subtotal), cur2d(c.taxBreakdown.nonTaxable.price.subtotal))}
       ${row(`Tax (${(c.taxRate*100).toFixed(1)}%)`, cur2d(c.taxBreakdown.tax))}
       ${row('Grand Total', cur2d(c.taxBreakdown.grandTotal), 'green')}
     </div>` : ''}
