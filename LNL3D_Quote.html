@@ -2471,23 +2471,39 @@ function calcQuote() {
   if (breakdownCard) breakdownCard.style.display = c.taxAmount > 0 ? '' : 'none';
   const tb = c.taxBreakdown;
   if (tb) {
-    setText('b-tax-machine',  cur(tb.taxable.machine));
-    setText('b-tax-fin',      cur(tb.taxable.finishing));
-    setText('b-tax-ship',     cur(tb.taxable.shipping));
-    setText('b-tax-custom',   cur(tb.taxable.custom));
-    setText('b-tax-total',    cur(tb.taxable.subtotal));
-    setText('b-nontax-labor', cur(tb.nonTaxable.labor));
-    setText('b-nontax-ship',  cur(tb.nonTaxable.shipping));
-    setText('b-nontax-custom',cur(tb.nonTaxable.custom));
-    setText('b-nontax-total', cur(tb.nonTaxable.subtotal));
-    setText('b-tax-collected', cur(tb.tax));
-    setText('b-grand-total',   cur(tb.grandTotal));
-    // Hide zero-value optional rows to keep the card compact
+    // Taxable group: raw + price per category
+    setText('b-tax-machine-raw',  cur(tb.taxable.raw.machine));
+    setText('b-tax-machine-price',cur(tb.taxable.price.machine));
+    setText('b-tax-fin-raw',      cur(tb.taxable.raw.finishing));
+    setText('b-tax-fin-price',    cur(tb.taxable.price.finishing));
+    setText('b-tax-ship-raw',     cur(tb.taxable.raw.shipping));
+    setText('b-tax-ship-price',   cur(tb.taxable.price.shipping));
+    setText('b-tax-custom-raw',   cur(tb.taxable.raw.custom));
+    setText('b-tax-custom-price', cur(tb.taxable.price.custom));
+    setText('b-tax-total-raw',    cur(tb.taxable.raw.subtotal));
+    setText('b-tax-total-price',  cur(tb.taxable.price.subtotal));
+
+    // Non-Taxable group: raw + price per category
+    setText('b-nontax-labor-raw', cur(tb.nonTaxable.raw.labor));
+    setText('b-nontax-labor-price',cur(tb.nonTaxable.price.labor));
+    setText('b-nontax-ship-raw',  cur(tb.nonTaxable.raw.shipping));
+    setText('b-nontax-ship-price',cur(tb.nonTaxable.price.shipping));
+    setText('b-nontax-custom-raw',cur(tb.nonTaxable.raw.custom));
+    setText('b-nontax-custom-price',cur(tb.nonTaxable.price.custom));
+    setText('b-nontax-total-raw', cur(tb.nonTaxable.raw.subtotal));
+    setText('b-nontax-total-price',cur(tb.nonTaxable.price.subtotal));
+
+    // Tax + Grand Total (no raw counterpart)
+    setText('b-tax-collected',    cur(tb.tax));
+    setText('b-grand-total',      cur(tb.grandTotal));
+
+    // Hide zero-value optional rows (gating on PRICE side; raw and price are zero together
+    // since price = raw × markup and markup is non-zero)
     const toggle = (id, val) => { const el = document.getElementById(id); if (el) el.style.display = val > 0 ? '' : 'none'; };
-    toggle('b-tax-ship-row',     tb.taxable.shipping);
-    toggle('b-tax-custom-row',   tb.taxable.custom);
-    toggle('b-nontax-ship-row',  tb.nonTaxable.shipping);
-    toggle('b-nontax-custom-row',tb.nonTaxable.custom);
+    toggle('b-tax-ship-row',     tb.taxable.price.shipping);
+    toggle('b-tax-custom-row',   tb.taxable.price.custom);
+    toggle('b-nontax-ship-row',  tb.nonTaxable.price.shipping);
+    toggle('b-nontax-custom-row',tb.nonTaxable.price.custom);
   }
 
   setText('p-quoted',      c.quoted > 0 ? cur(c.quoted) : '—');
