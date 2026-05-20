@@ -2687,8 +2687,8 @@ function exportCSV() {
   const rows = [...state.quotes].sort((a,b)=>(a.serial||0)-(b.serial||0)).map(q => {
     const calc = calcFromQuoteData(q);
     const taxRatePct     = ((state.settings.tax_rate||0)*100).toFixed(2);
-    const taxableSales    = calc.taxBreakdown ? calc.taxBreakdown.taxable.subtotal.toFixed(2)    : '0.00';
-    const nonTaxableSales = calc.taxBreakdown ? calc.taxBreakdown.nonTaxable.subtotal.toFixed(2) : '0.00';
+    const taxableSales    = calc.taxBreakdown ? calc.taxBreakdown.taxable.price.subtotal.toFixed(2)    : '0.00';
+    const nonTaxableSales = calc.taxBreakdown ? calc.taxBreakdown.nonTaxable.price.subtotal.toFixed(2) : '0.00';
     const taxAmt          = calc.taxAmount.toFixed(2);
     const totalWithTax    = calc.suggestedWithTax.toFixed(2);
     return [...cols.map(c => escape(q[c]??'')), escape(taxRatePct), escape(taxableSales), escape(nonTaxableSales), escape(taxAmt), escape(totalWithTax)].join(',');
