@@ -2095,10 +2095,10 @@ function calcFromQuoteData(q) {
   const taxAmount       = taxableSubtotal * taxRate;
   const suggestedWithTax = suggested + taxAmount;
 
-  // Tax breakdown — post-markup, customer-facing (bookkeeping view)
+  // Tax breakdown — both raw cost and post-markup price per category
   const customNonTaxable = customTotal - customTaxable;
 
-  // Raw category totals (used to derive post-markup per-category lines)
+  // Raw category totals (pre-markup)
   const _rawTaxMachine   = machinePP * qty;
   const _rawTaxFinishing = finishing;
   const _rawTaxShipping  = shipTaxable ? shipping : 0;
@@ -2107,20 +2107,39 @@ function calcFromQuoteData(q) {
   const _rawNontaxShip   = shipTaxable ? 0 : shipping;
   const _rawNontaxCustom = customNonTaxable;
 
+  const _rawTaxSubtotal    = _rawTaxMachine + _rawTaxFinishing + _rawTaxShipping + _rawTaxCustom;
+  const _rawNontaxSubtotal = _rawNontaxLabor + _rawNontaxShip + _rawNontaxCustom;
+
   const taxBreakdown = {
-    // What the customer is charged, per category (raw × markup)
     taxable: {
-      machine:   _rawTaxMachine   * markup,
-      finishing: _rawTaxFinishing * markup,
-      shipping:  _rawTaxShipping  * markup,
-      custom:    _rawTaxCustom    * markup,
-      subtotal:  taxableSubtotal,                        // = taxableCostPP × qty × markup
+      raw: {
+        machine:   _rawTaxMachine,
+        finishing: _rawTaxFinishing,
+        shipping:  _rawTaxShipping,
+        custom:    _rawTaxCustom,
+        subtotal:  _rawTaxSubtotal,
+      },
+      price: {
+        machine:   _rawTaxMachine   * markup,
+        finishing: _rawTaxFinishing * markup,
+        shipping:  _rawTaxShipping  * markup,
+        custom:    _rawTaxCustom    * markup,
+        subtotal:  taxableSubtotal,                      // = taxableCostPP × qty × markup (authoritative)
+      },
     },
     nonTaxable: {
-      labor:     _rawNontaxLabor  * markup,
-      shipping:  _rawNontaxShip   * markup,
-      custom:    _rawNontaxCustom * markup,
-      subtotal:  suggested - taxableSubtotal,            // absorbs min_fee floor → non-taxable
+      raw: {
+        labor:     _rawNontaxLabor,
+        shipping:  _rawNontaxShip,
+        custom:    _rawNontaxCustom,
+        subtotal:  _rawNontaxSubtotal,
+      },
+      price: {
+        labor:     _rawNontaxLabor  * markup,
+        shipping:  _rawNontaxShip   * markup,
+        custom:    _rawNontaxCustom * markup,
+        subtotal:  suggested - taxableSubtotal,          // absorbs min_fee floor → non-taxable
+      },
     },
     tax:       taxAmount,
     grandTotal: suggestedWithTax,
