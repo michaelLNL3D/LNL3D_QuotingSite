@@ -1109,26 +1109,33 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
       <div class="cost-preview" id="tax-breakdown-card" style="display:none">
         <div class="cost-preview-header">Customer Charges (Tax Summary)</div>
 
+        <!-- Column headers -->
+        <div class="cost-row-3col-header">
+          <span></span><span>Cost</span><span>Price</span>
+        </div>
+
         <!-- Taxable group -->
         <div class="cost-row" style="background:var(--bg3)">
           <span class="cost-row-label" style="font-weight:700;text-transform:uppercase;font-size:10px;letter-spacing:.6px">Taxable</span>
           <span></span>
         </div>
-        <div class="cost-row"><span class="cost-row-label">Machine</span><span class="cost-row-value" id="b-tax-machine">$0.00</span></div>
-        <div class="cost-row"><span class="cost-row-label">Finishing</span><span class="cost-row-value" id="b-tax-fin">$0.00</span></div>
-        <div class="cost-row" id="b-tax-ship-row"><span class="cost-row-label">Shipping</span><span class="cost-row-value" id="b-tax-ship">$0.00</span></div>
-        <div class="cost-row" id="b-tax-custom-row"><span class="cost-row-label">Custom Items</span><span class="cost-row-value" id="b-tax-custom">$0.00</span></div>
-        <div class="cost-row total"><span class="cost-row-label">Taxable Subtotal</span><span class="cost-row-value green" id="b-tax-total">$0.00</span></div>
+        <div class="cost-row-3col"><span>Machine</span><span class="cost-row-value" id="b-tax-machine-raw">$0.00</span><span class="cost-row-value" id="b-tax-machine-price">$0.00</span></div>
+        <div class="cost-row-3col"><span>Finishing</span><span class="cost-row-value" id="b-tax-fin-raw">$0.00</span><span class="cost-row-value" id="b-tax-fin-price">$0.00</span></div>
+        <div class="cost-row-3col" id="b-tax-ship-row"><span>Shipping</span><span class="cost-row-value" id="b-tax-ship-raw">$0.00</span><span class="cost-row-value" id="b-tax-ship-price">$0.00</span></div>
+        <div class="cost-row-3col" id="b-tax-custom-row"><span>Custom Items</span><span class="cost-row-value" id="b-tax-custom-raw">$0.00</span><span class="cost-row-value" id="b-tax-custom-price">$0.00</span></div>
+        <div class="cost-row-3col total"><span>Taxable Subtotal</span><span class="cost-row-value" id="b-tax-total-raw">$0.00</span><span class="cost-row-value green" id="b-tax-total-price">$0.00</span></div>
 
         <!-- Non-Taxable group -->
         <div class="cost-row" style="background:var(--bg3);border-top:2px solid var(--border2)">
           <span class="cost-row-label" style="font-weight:700;text-transform:uppercase;font-size:10px;letter-spacing:.6px">Non-Taxable</span>
           <span></span>
         </div>
-        <div class="cost-row"><span class="cost-row-label">Labor</span><span class="cost-row-value" id="b-nontax-labor">$0.00</span></div>
-        <div class="cost-row" id="b-nontax-ship-row"><span class="cost-row-label">Shipping</span><span class="cost-row-value" id="b-nontax-ship">$0.00</span></div>
-        <div class="cost-row" id="b-nontax-custom-row"><span class="cost-row-label">Custom Items</span><span class="cost-row-value" id="b-nontax-custom">$0.00</span></div>
-        <div class="cost-row total"><span class="cost-row-label">Non-Taxable Subtotal</span><span class="cost-row-value" id="b-nontax-total">$0.00</span></div>
+        <div class="cost-row-3col"><span>Labor</span><span class="cost-row-value" id="b-nontax-labor-raw">$0.00</span><span class="cost-row-value" id="b-nontax-labor-price">$0.00</span></div>
+        <div class="cost-row-3col" id="b-nontax-ship-row"><span>Shipping</span><span class="cost-row-value" id="b-nontax-ship-raw">$0.00</span><span class="cost-row-value" id="b-nontax-ship-price">$0.00</span></div>
+        <div class="cost-row-3col" id="b-nontax-custom-row"><span>Custom Items</span><span class="cost-row-value" id="b-nontax-custom-raw">$0.00</span><span class="cost-row-value" id="b-nontax-custom-price">$0.00</span></div>
+        <div class="cost-row-3col total"><span>Non-Taxable Subtotal</span><span class="cost-row-value" id="b-nontax-total-raw">$0.00</span><span class="cost-row-value" id="b-nontax-total-price">$0.00</span></div>
+
+        <!-- Tax + Grand Total (2-col, no raw equivalent) -->
         <div class="cost-row" style="border-top:2px solid var(--border2)">
           <span class="cost-row-label">Tax</span>
           <span class="cost-row-value" id="b-tax-collected">$0.00</span>
