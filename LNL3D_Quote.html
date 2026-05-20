@@ -342,6 +342,11 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 .cost-row-value.red   { color: var(--red); }
 .cost-row-value.blue  { color: var(--accent2); }
 .cost-row-value.orange { color: var(--orange); }
+.cost-row-3col { display:grid; grid-template-columns: 1fr auto auto; gap:12px; align-items:center; padding:4px 12px; font-size:12px; }
+.cost-row-3col .cost-row-value { text-align:right; min-width:60px; }
+.cost-row-3col.total { font-weight:600; border-top:1px solid var(--border); padding-top:6px; margin-top:2px; }
+.cost-row-3col-header { display:grid; grid-template-columns: 1fr auto auto; gap:12px; padding:4px 12px 2px; font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; }
+.cost-row-3col-header span:nth-child(2), .cost-row-3col-header span:nth-child(3) { text-align:right; min-width:60px; }
 
 /* Pricing schedule table in sidebar */
 .pricing-table th, .pricing-table td { padding: 6px 10px; font-size: 11px; }
