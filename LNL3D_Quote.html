@@ -342,6 +342,11 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 .cost-row-value.red   { color: var(--red); }
 .cost-row-value.blue  { color: var(--accent2); }
 .cost-row-value.orange { color: var(--orange); }
+.cost-row-3col { display:grid; grid-template-columns: 1fr auto auto; gap:12px; align-items:center; padding:4px 12px; font-size:12px; }
+.cost-row-3col .cost-row-value { text-align:right; min-width:60px; }
+.cost-row-3col.total { font-weight:600; border-top:1px solid var(--border); padding-top:6px; margin-top:2px; }
+.cost-row-3col-header { display:grid; grid-template-columns: 1fr auto auto; gap:12px; padding:4px 12px 2px; font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; }
+.cost-row-3col-header span:nth-child(2), .cost-row-3col-header span:nth-child(3) { text-align:right; min-width:60px; }
 
 /* Pricing schedule table in sidebar */
 .pricing-table th, .pricing-table td { padding: 6px 10px; font-size: 11px; }
@@ -1104,26 +1109,33 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
       <div class="cost-preview" id="tax-breakdown-card" style="display:none">
         <div class="cost-preview-header">Customer Charges (Tax Summary)</div>
 
+        <!-- Column headers -->
+        <div class="cost-row-3col-header">
+          <span></span><span>Cost</span><span>Price</span>
+        </div>
+
         <!-- Taxable group -->
         <div class="cost-row" style="background:var(--bg3)">
           <span class="cost-row-label" style="font-weight:700;text-transform:uppercase;font-size:10px;letter-spacing:.6px">Taxable</span>
           <span></span>
         </div>
-        <div class="cost-row"><span class="cost-row-label">Machine</span><span class="cost-row-value" id="b-tax-machine">$0.00</span></div>
-        <div class="cost-row"><span class="cost-row-label">Finishing</span><span class="cost-row-value" id="b-tax-fin">$0.00</span></div>
-        <div class="cost-row" id="b-tax-ship-row"><span class="cost-row-label">Shipping</span><span class="cost-row-value" id="b-tax-ship">$0.00</span></div>
-        <div class="cost-row" id="b-tax-custom-row"><span class="cost-row-label">Custom Items</span><span class="cost-row-value" id="b-tax-custom">$0.00</span></div>
-        <div class="cost-row total"><span class="cost-row-label">Taxable Subtotal</span><span class="cost-row-value green" id="b-tax-total">$0.00</span></div>
+        <div class="cost-row-3col"><span>Machine</span><span class="cost-row-value" id="b-tax-machine-raw">$0.00</span><span class="cost-row-value" id="b-tax-machine-price">$0.00</span></div>
+        <div class="cost-row-3col"><span>Finishing</span><span class="cost-row-value" id="b-tax-fin-raw">$0.00</span><span class="cost-row-value" id="b-tax-fin-price">$0.00</span></div>
+        <div class="cost-row-3col" id="b-tax-ship-row"><span>Shipping</span><span class="cost-row-value" id="b-tax-ship-raw">$0.00</span><span class="cost-row-value" id="b-tax-ship-price">$0.00</span></div>
+        <div class="cost-row-3col" id="b-tax-custom-row"><span>Custom Items</span><span class="cost-row-value" id="b-tax-custom-raw">$0.00</span><span class="cost-row-value" id="b-tax-custom-price">$0.00</span></div>
+        <div class="cost-row-3col total"><span>Taxable Subtotal</span><span class="cost-row-value" id="b-tax-total-raw">$0.00</span><span class="cost-row-value green" id="b-tax-total-price">$0.00</span></div>
 
         <!-- Non-Taxable group -->
         <div class="cost-row" style="background:var(--bg3);border-top:2px solid var(--border2)">
           <span class="cost-row-label" style="font-weight:700;text-transform:uppercase;font-size:10px;letter-spacing:.6px">Non-Taxable</span>
           <span></span>
         </div>
-        <div class="cost-row"><span class="cost-row-label">Labor</span><span class="cost-row-value" id="b-nontax-labor">$0.00</span></div>
-        <div class="cost-row" id="b-nontax-ship-row"><span class="cost-row-label">Shipping</span><span class="cost-row-value" id="b-nontax-ship">$0.00</span></div>
-        <div class="cost-row" id="b-nontax-custom-row"><span class="cost-row-label">Custom Items</span><span class="cost-row-value" id="b-nontax-custom">$0.00</span></div>
-        <div class="cost-row total"><span class="cost-row-label">Non-Taxable Subtotal</span><span class="cost-row-value" id="b-nontax-total">$0.00</span></div>
+        <div class="cost-row-3col"><span>Labor</span><span class="cost-row-value" id="b-nontax-labor-raw">$0.00</span><span class="cost-row-value" id="b-nontax-labor-price">$0.00</span></div>
+        <div class="cost-row-3col" id="b-nontax-ship-row"><span>Shipping</span><span class="cost-row-value" id="b-nontax-ship-raw">$0.00</span><span class="cost-row-value" id="b-nontax-ship-price">$0.00</span></div>
+        <div class="cost-row-3col" id="b-nontax-custom-row"><span>Custom Items</span><span class="cost-row-value" id="b-nontax-custom-raw">$0.00</span><span class="cost-row-value" id="b-nontax-custom-price">$0.00</span></div>
+        <div class="cost-row-3col total"><span>Non-Taxable Subtotal</span><span class="cost-row-value" id="b-nontax-total-raw">$0.00</span><span class="cost-row-value" id="b-nontax-total-price">$0.00</span></div>
+
+        <!-- Tax + Grand Total (2-col, no raw equivalent) -->
         <div class="cost-row" style="border-top:2px solid var(--border2)">
           <span class="cost-row-label">Tax</span>
           <span class="cost-row-value" id="b-tax-collected">$0.00</span>
@@ -2095,10 +2107,10 @@ function calcFromQuoteData(q) {
   const taxAmount       = taxableSubtotal * taxRate;
   const suggestedWithTax = suggested + taxAmount;
 
-  // Tax breakdown — post-markup, customer-facing (bookkeeping view)
+  // Tax breakdown — both raw cost and post-markup price per category
   const customNonTaxable = customTotal - customTaxable;
 
-  // Raw category totals (used to derive post-markup per-category lines)
+  // Raw category totals (pre-markup)
   const _rawTaxMachine   = machinePP * qty;
   const _rawTaxFinishing = finishing;
   const _rawTaxShipping  = shipTaxable ? shipping : 0;
@@ -2107,20 +2119,39 @@ function calcFromQuoteData(q) {
   const _rawNontaxShip   = shipTaxable ? 0 : shipping;
   const _rawNontaxCustom = customNonTaxable;
 
+  const _rawTaxSubtotal    = _rawTaxMachine + _rawTaxFinishing + _rawTaxShipping + _rawTaxCustom;
+  const _rawNontaxSubtotal = _rawNontaxLabor + _rawNontaxShip + _rawNontaxCustom;
+
   const taxBreakdown = {
-    // What the customer is charged, per category (raw × markup)
     taxable: {
-      machine:   _rawTaxMachine   * markup,
-      finishing: _rawTaxFinishing * markup,
-      shipping:  _rawTaxShipping  * markup,
-      custom:    _rawTaxCustom    * markup,
-      subtotal:  taxableSubtotal,                        // = taxableCostPP × qty × markup
+      raw: {
+        machine:   _rawTaxMachine,
+        finishing: _rawTaxFinishing,
+        shipping:  _rawTaxShipping,
+        custom:    _rawTaxCustom,
+        subtotal:  _rawTaxSubtotal,
+      },
+      price: {
+        machine:   _rawTaxMachine   * markup,
+        finishing: _rawTaxFinishing * markup,
+        shipping:  _rawTaxShipping  * markup,
+        custom:    _rawTaxCustom    * markup,
+        subtotal:  taxableSubtotal,                      // = taxableCostPP × qty × markup (authoritative)
+      },
     },
     nonTaxable: {
-      labor:     _rawNontaxLabor  * markup,
-      shipping:  _rawNontaxShip   * markup,
-      custom:    _rawNontaxCustom * markup,
-      subtotal:  suggested - taxableSubtotal,            // absorbs min_fee floor → non-taxable
+      raw: {
+        labor:     _rawNontaxLabor,
+        shipping:  _rawNontaxShip,
+        custom:    _rawNontaxCustom,
+        subtotal:  _rawNontaxSubtotal,
+      },
+      price: {
+        labor:     _rawNontaxLabor  * markup,
+        shipping:  _rawNontaxShip   * markup,
+        custom:    _rawNontaxCustom * markup,
+        subtotal:  suggested - taxableSubtotal,          // absorbs min_fee floor → non-taxable
+      },
     },
     tax:       taxAmount,
     grandTotal: suggestedWithTax,
@@ -2440,23 +2471,39 @@ function calcQuote() {
   if (breakdownCard) breakdownCard.style.display = c.taxAmount > 0 ? '' : 'none';
   const tb = c.taxBreakdown;
   if (tb) {
-    setText('b-tax-machine',  cur(tb.taxable.machine));
-    setText('b-tax-fin',      cur(tb.taxable.finishing));
-    setText('b-tax-ship',     cur(tb.taxable.shipping));
-    setText('b-tax-custom',   cur(tb.taxable.custom));
-    setText('b-tax-total',    cur(tb.taxable.subtotal));
-    setText('b-nontax-labor', cur(tb.nonTaxable.labor));
-    setText('b-nontax-ship',  cur(tb.nonTaxable.shipping));
-    setText('b-nontax-custom',cur(tb.nonTaxable.custom));
-    setText('b-nontax-total', cur(tb.nonTaxable.subtotal));
-    setText('b-tax-collected', cur(tb.tax));
-    setText('b-grand-total',   cur(tb.grandTotal));
-    // Hide zero-value optional rows to keep the card compact
+    // Taxable group: raw + price per category
+    setText('b-tax-machine-raw',  cur(tb.taxable.raw.machine));
+    setText('b-tax-machine-price',cur(tb.taxable.price.machine));
+    setText('b-tax-fin-raw',      cur(tb.taxable.raw.finishing));
+    setText('b-tax-fin-price',    cur(tb.taxable.price.finishing));
+    setText('b-tax-ship-raw',     cur(tb.taxable.raw.shipping));
+    setText('b-tax-ship-price',   cur(tb.taxable.price.shipping));
+    setText('b-tax-custom-raw',   cur(tb.taxable.raw.custom));
+    setText('b-tax-custom-price', cur(tb.taxable.price.custom));
+    setText('b-tax-total-raw',    cur(tb.taxable.raw.subtotal));
+    setText('b-tax-total-price',  cur(tb.taxable.price.subtotal));
+
+    // Non-Taxable group: raw + price per category
+    setText('b-nontax-labor-raw', cur(tb.nonTaxable.raw.labor));
+    setText('b-nontax-labor-price',cur(tb.nonTaxable.price.labor));
+    setText('b-nontax-ship-raw',  cur(tb.nonTaxable.raw.shipping));
+    setText('b-nontax-ship-price',cur(tb.nonTaxable.price.shipping));
+    setText('b-nontax-custom-raw',cur(tb.nonTaxable.raw.custom));
+    setText('b-nontax-custom-price',cur(tb.nonTaxable.price.custom));
+    setText('b-nontax-total-raw', cur(tb.nonTaxable.raw.subtotal));
+    setText('b-nontax-total-price',cur(tb.nonTaxable.price.subtotal));
+
+    // Tax + Grand Total (no raw counterpart)
+    setText('b-tax-collected',    cur(tb.tax));
+    setText('b-grand-total',      cur(tb.grandTotal));
+
+    // Hide zero-value optional rows (gating on PRICE side; raw and price are zero together
+    // since price = raw × markup and markup is non-zero)
     const toggle = (id, val) => { const el = document.getElementById(id); if (el) el.style.display = val > 0 ? '' : 'none'; };
-    toggle('b-tax-ship-row',     tb.taxable.shipping);
-    toggle('b-tax-custom-row',   tb.taxable.custom);
-    toggle('b-nontax-ship-row',  tb.nonTaxable.shipping);
-    toggle('b-nontax-custom-row',tb.nonTaxable.custom);
+    toggle('b-tax-ship-row',     tb.taxable.price.shipping);
+    toggle('b-tax-custom-row',   tb.taxable.price.custom);
+    toggle('b-nontax-ship-row',  tb.nonTaxable.price.shipping);
+    toggle('b-nontax-custom-row',tb.nonTaxable.price.custom);
   }
 
   setText('p-quoted',      c.quoted > 0 ? cur(c.quoted) : '—');
@@ -2668,8 +2715,8 @@ function exportCSV() {
   const rows = [...state.quotes].sort((a,b)=>(a.serial||0)-(b.serial||0)).map(q => {
     const calc = calcFromQuoteData(q);
     const taxRatePct     = ((state.settings.tax_rate||0)*100).toFixed(2);
-    const taxableSales    = calc.taxBreakdown ? calc.taxBreakdown.taxable.subtotal.toFixed(2)    : '0.00';
-    const nonTaxableSales = calc.taxBreakdown ? calc.taxBreakdown.nonTaxable.subtotal.toFixed(2) : '0.00';
+    const taxableSales    = calc.taxBreakdown ? calc.taxBreakdown.taxable.price.subtotal.toFixed(2)    : '0.00';
+    const nonTaxableSales = calc.taxBreakdown ? calc.taxBreakdown.nonTaxable.price.subtotal.toFixed(2) : '0.00';
     const taxAmt          = calc.taxAmount.toFixed(2);
     const totalWithTax    = calc.suggestedWithTax.toFixed(2);
     return [...cols.map(c => escape(q[c]??'')), escape(taxRatePct), escape(taxableSales), escape(nonTaxableSales), escape(taxAmt), escape(totalWithTax)].join(',');
@@ -2728,6 +2775,8 @@ function showQuickView(serial) {
   const row = (label, value, cls='') =>
     `<div class="drawer-row"><span class="drawer-row-label">${label}</span><span class="drawer-row-value ${cls}">${value}</span></div>`;
 
+  const row3col = (label, raw, price, priceCls='') => `<div class="drawer-row" style="display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center"><span class="drawer-row-label">${label}</span><span class="drawer-row-value" style="min-width:60px;text-align:right">${raw}</span><span class="drawer-row-value ${priceCls}" style="min-width:60px;text-align:right">${price}</span></div>`;
+
   const rushLabel = {1.0:'Standard',1.25:'Light Rush',1.5:'Rush',1.75:'Priority',2.0:'Urgent'};
   // Find the tier that actually applies to the current quantity (highest tier.qty <= qty)
   const currentQty = parseInt(q.quantity) || 1;
@@ -2758,17 +2807,20 @@ function showQuickView(serial) {
     ${c.taxAmount > 0 && c.taxBreakdown ? `
     <div class="drawer-section">
       <div class="drawer-section-label">Customer Charges (Tax Summary)</div>
-      <div style="font-size:10px;color:var(--text3);padding:2px 0 6px;text-transform:uppercase;letter-spacing:.5px">Taxable</div>
-      ${row('Machine',     cur2d(c.taxBreakdown.taxable.machine))}
-      ${row('Finishing',   cur2d(c.taxBreakdown.taxable.finishing))}
-      ${c.taxBreakdown.taxable.shipping > 0 ? row('Shipping', cur2d(c.taxBreakdown.taxable.shipping)) : ''}
-      ${c.taxBreakdown.taxable.custom   > 0 ? row('Custom Items', cur2d(c.taxBreakdown.taxable.custom)) : ''}
-      ${row('Taxable Subtotal', cur2d(c.taxBreakdown.taxable.subtotal), 'green')}
-      <div style="font-size:10px;color:var(--text3);padding:8px 0 6px;text-transform:uppercase;letter-spacing:.5px;border-top:1px solid var(--border);margin-top:6px">Non-Taxable</div>
-      ${row('Labor', cur2d(c.taxBreakdown.nonTaxable.labor))}
-      ${c.taxBreakdown.nonTaxable.shipping > 0 ? row('Shipping', cur2d(c.taxBreakdown.nonTaxable.shipping)) : ''}
-      ${c.taxBreakdown.nonTaxable.custom   > 0 ? row('Custom Items', cur2d(c.taxBreakdown.nonTaxable.custom)) : ''}
-      ${row('Non-Taxable Subtotal', cur2d(c.taxBreakdown.nonTaxable.subtotal))}
+      <div style="display:grid;grid-template-columns:1fr auto auto;gap:12px;padding:2px 0;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">
+        <span></span><span style="text-align:right;min-width:60px">Cost</span><span style="text-align:right;min-width:60px">Price</span>
+      </div>
+      <div style="font-size:10px;color:var(--text3);padding:4px 0 4px;text-transform:uppercase;letter-spacing:.5px">Taxable</div>
+      ${row3col('Machine',     cur2d(c.taxBreakdown.taxable.raw.machine),   cur2d(c.taxBreakdown.taxable.price.machine))}
+      ${row3col('Finishing',   cur2d(c.taxBreakdown.taxable.raw.finishing), cur2d(c.taxBreakdown.taxable.price.finishing))}
+      ${c.taxBreakdown.taxable.price.shipping > 0 ? row3col('Shipping',     cur2d(c.taxBreakdown.taxable.raw.shipping), cur2d(c.taxBreakdown.taxable.price.shipping)) : ''}
+      ${c.taxBreakdown.taxable.price.custom   > 0 ? row3col('Custom Items', cur2d(c.taxBreakdown.taxable.raw.custom),   cur2d(c.taxBreakdown.taxable.price.custom))   : ''}
+      ${row3col('Taxable Subtotal', cur2d(c.taxBreakdown.taxable.raw.subtotal), cur2d(c.taxBreakdown.taxable.price.subtotal), 'green')}
+      <div style="font-size:10px;color:var(--text3);padding:8px 0 4px;text-transform:uppercase;letter-spacing:.5px;border-top:1px solid var(--border);margin-top:6px">Non-Taxable</div>
+      ${row3col('Labor', cur2d(c.taxBreakdown.nonTaxable.raw.labor), cur2d(c.taxBreakdown.nonTaxable.price.labor))}
+      ${c.taxBreakdown.nonTaxable.price.shipping > 0 ? row3col('Shipping',     cur2d(c.taxBreakdown.nonTaxable.raw.shipping), cur2d(c.taxBreakdown.nonTaxable.price.shipping)) : ''}
+      ${c.taxBreakdown.nonTaxable.price.custom   > 0 ? row3col('Custom Items', cur2d(c.taxBreakdown.nonTaxable.raw.custom),   cur2d(c.taxBreakdown.nonTaxable.price.custom))   : ''}
+      ${row3col('Non-Taxable Subtotal', cur2d(c.taxBreakdown.nonTaxable.raw.subtotal), cur2d(c.taxBreakdown.nonTaxable.price.subtotal))}
       ${row(`Tax (${(c.taxRate*100).toFixed(1)}%)`, cur2d(c.taxBreakdown.tax))}
       ${row('Grand Total', cur2d(c.taxBreakdown.grandTotal), 'green')}
     </div>` : ''}

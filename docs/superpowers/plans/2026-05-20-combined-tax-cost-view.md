@@ -36,6 +36,7 @@ ROUTER state: `/Users/michael/.mex/ROUTER.md` — update Tax Summary bullet.
 
 **Files:**
 - Modify: `LNL3D_Quote.html:2098-2125` (the `taxBreakdown` construction)
+- Modify: `LNL3D_Quote.html:~2690-2691` (exportCSV reader migration)
 
 - [ ] **Step 1: Read current `taxBreakdown` construction**
 
@@ -131,6 +132,17 @@ With this:
     grandTotal: suggestedWithTax,
   };
 ```
+
+- [ ] **Step 2b: Migrate exportCSV() reader**
+
+In `exportCSV()` (~L2690), update the two lines that read `taxBreakdown` to use the new `.price.subtotal` paths:
+
+```js
+const taxableSales    = calc.taxBreakdown ? calc.taxBreakdown.taxable.price.subtotal.toFixed(2)    : '0.00';
+const nonTaxableSales = calc.taxBreakdown ? calc.taxBreakdown.nonTaxable.price.subtotal.toFixed(2) : '0.00';
+```
+
+(Caught in code-quality review of commit 92e5253 — the old flat `.taxable.subtotal` path no longer exists after the raw/price refactor.)
 
 - [ ] **Step 3: Verify the data model in browser console**
 
@@ -632,6 +644,6 @@ git diff --cached --stat 2>/dev/null && git commit -m "docs(patterns): update ta
 
 **Placeholder scan:** no TBDs, no "implement appropriately", every code step has the exact code.
 
-**Type consistency:** field paths used in Task 4 populate (`tb.taxable.raw.machine`, `tb.taxable.price.machine`, `tb.nonTaxable.raw.labor`, etc.) match the data model defined in Task 1. IDs in Task 3 HTML (`b-tax-machine-raw`, `b-tax-machine-price`) match Task 4 `setText` calls. Drawer paths in Task 5 also match.
+**Type consistency:** field paths used in Task 4 populate (`tb.taxable.raw.machine`, `tb.taxable.price.machine`, `tb.nonTaxable.raw.labor`, etc.) match the data model defined in Task 1. IDs in Task 3 HTML (`b-tax-machine-raw`, `b-tax-machine-price`) match Task 4 `setText` calls. Drawer paths in Task 5 also match. The `exportCSV()` reader (Task 1 Step 2b) was caught in code-quality review of commit 92e5253 and migrated from the old flat `.taxable.subtotal` / `.nonTaxable.subtotal` paths to `.taxable.price.subtotal` / `.nonTaxable.price.subtotal`.
 
 **Risk note:** Task 1 leaves the sidebar UI broken (old IDs no longer populated) until Task 4 is committed. If executing in subagent mode, the build will technically run between tasks but the card will display `$0.00` everywhere — not a regression, just an in-flight state. The card is also gated on `tax > 0` so most quotes won't even show it.
