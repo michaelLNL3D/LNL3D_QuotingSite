@@ -345,7 +345,7 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 .cost-row-3col { display:grid; grid-template-columns: 1fr auto auto; gap:12px; align-items:center; padding:4px 12px; font-size:12px; }
 .cost-row-3col .cost-row-value { text-align:right; min-width:60px; }
 .cost-row-3col.total { font-weight:600; border-top:1px solid var(--border); padding-top:6px; margin-top:2px; }
-.cost-row-3col-header { display:grid; grid-template-columns: 1fr auto auto; gap:12px; padding:4px 12px 2px; font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; }
+.cost-row-3col-header { display:grid; grid-template-columns: 1fr auto auto; gap:12px; padding:4px 12px 2px; font-size:11px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:0.5px; }
 .cost-row-3col-header span:nth-child(2), .cost-row-3col-header span:nth-child(3) { text-align:right; min-width:60px; }
 
 /* Pricing schedule table in sidebar */
@@ -1116,7 +1116,7 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 
         <!-- Taxable group -->
         <div class="cost-row" style="background:var(--bg3)">
-          <span class="cost-row-label" style="font-weight:700;text-transform:uppercase;font-size:10px;letter-spacing:.6px">Taxable</span>
+          <span class="cost-row-label" style="color:var(--text1);font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.6px">Taxable</span>
           <span></span>
         </div>
         <div class="cost-row-3col"><span>Machine</span><span class="cost-row-value" id="b-tax-machine-raw">$0.00</span><span class="cost-row-value" id="b-tax-machine-price">$0.00</span></div>
@@ -1127,7 +1127,7 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 
         <!-- Non-Taxable group -->
         <div class="cost-row" style="background:var(--bg3);border-top:2px solid var(--border2)">
-          <span class="cost-row-label" style="font-weight:700;text-transform:uppercase;font-size:10px;letter-spacing:.6px">Non-Taxable</span>
+          <span class="cost-row-label" style="color:var(--text1);font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.6px">Non-Taxable</span>
           <span></span>
         </div>
         <div class="cost-row-3col"><span>Labor</span><span class="cost-row-value" id="b-nontax-labor-raw">$0.00</span><span class="cost-row-value" id="b-nontax-labor-price">$0.00</span></div>
@@ -1848,23 +1848,26 @@ function saveState() {
 function exportData() {
   try {
     const data = {
-      version: '1.0',
+      version: '2.0',
       exported: new Date().toISOString(),
       quote_count: state.quotes.length,
+      customer_count: state.customers.length,
       settings: state.settings,
-      quotes: state.quotes
+      quotes: state.quotes,
+      customers: state.customers,
+      templates: loadTemplates()
     };
     const json = JSON.stringify(data, null, 2);
     const blob = new Blob([json], {type: 'application/json;charset=utf-8'});
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href     = url;
-    a.download = 'LNL3D_Quotes_' + new Date().toISOString().slice(0,10) + '.json';
+    a.download = 'LNL3D_Backup_' + new Date().toISOString().slice(0,10) + '.json';
     a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
     setTimeout(() => { URL.revokeObjectURL(url); document.body.removeChild(a); }, 500);
-    toast('Exported ' + state.quotes.length + ' quotes to JSON');
+    toast('Backup exported: ' + state.quotes.length + ' quotes, ' + state.customers.length + ' customers');
   } catch(e) {
     console.error('Export failed:', e);
     toast('Export failed: ' + e.message, 'error');
@@ -1877,11 +1880,15 @@ function importData(e) {
   reader.onload = ev => {
     try {
       const data = JSON.parse(ev.target.result);
-      if (data.settings) state.settings = data.settings;
-      if (data.quotes)   state.quotes   = data.quotes;
+      if (data.settings)  state.settings  = data.settings;
+      if (data.quotes)    state.quotes    = data.quotes;
+      if (data.customers) state.customers = data.customers;
+      if (Array.isArray(data.templates)) saveTemplateStore(data.templates);
       saveState();
+      if (data.customers) saveCustomers();   // saveState() doesn't sync customers to server
       initApp();
-      toast('Data imported successfully (' + state.quotes.length + ' quotes)');
+      const v = data.version || '1.0';
+      toast('Backup restored (v' + v + '): ' + state.quotes.length + ' quotes, ' + (state.customers?.length||0) + ' customers');
     } catch(err) { toast('Import failed: invalid JSON', 'error'); }
   };
   reader.readAsText(file);
