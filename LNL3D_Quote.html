@@ -2044,7 +2044,7 @@ function getMarkupForQty(qty) {
 function getPrinter(name) { return state.settings.printers.find(p => p.name === name) || state.settings.printers[0]; }
 function getMaterial(name) { return state.settings.materials.find(m => m.name === name); }
 
-function calcFromQuoteData(q) {
+function calcFromQuoteData(q, opts = {}) {
   const s = state.settings;
   const mat  = getMaterial(q.filament);
   const prt  = getPrinter(q.printer);
@@ -2060,7 +2060,7 @@ function calcFromQuoteData(q) {
   const prepMin    = (parseFloat(q.prep_model||0) + parseFloat(q.prep_slice||0));
   const postMin    = (parseFloat(q.post_remove||0) + parseFloat(q.post_support||0) + parseFloat(q.post_extra||0));
   const finishing  = (parseFloat(q.fin_sand||0) + parseFloat(q.fin_paint||0) + parseFloat(q.fin_hardware||0) + parseFloat(q.fin_other||0));
-  const shipping   = (parseFloat(q.ship_pack||0) + parseFloat(q.ship_cost||0));
+  const shipping   = opts.noShipping ? 0 : (parseFloat(q.ship_pack||0) + parseFloat(q.ship_cost||0));
   const consumables= parseFloat(q.consumables||0);
 
   // Material costs
@@ -2092,7 +2092,7 @@ function calcFromQuoteData(q) {
   const shipPP = shipping / qty;
 
   // Custom line items
-  const customItems   = Array.isArray(q.custom_items) ? q.custom_items : [];
+  const customItems   = (!opts.noCustom && Array.isArray(q.custom_items)) ? q.custom_items : [];
   const customTotal   = customItems.reduce((sum, it) => sum + parseFloat(it.amount||0), 0);
   const customTaxable = customItems.reduce((sum, it) => sum + (it.taxable ? parseFloat(it.amount||0) : 0), 0);
   const customPP      = customTotal / qty;
@@ -2103,7 +2103,7 @@ function calcFromQuoteData(q) {
   // Markup & pricing
   const baseMarkup = getMarkupForQty(qty);
   const markup = baseMarkup * rush * quality;
-  const suggested = Math.max(costPP * qty * markup, s.min_fee);
+  const suggested = opts.noFloor ? (costPP * qty * markup) : Math.max(costPP * qty * markup, s.min_fee);
 
   // Tax computation
   const taxRate     = parseFloat(s.tax_rate || 0);
