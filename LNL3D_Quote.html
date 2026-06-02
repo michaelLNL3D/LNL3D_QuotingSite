@@ -4566,6 +4566,89 @@ function renderCustomItems() {
     </div>`).join('');
 }
 
+function addPart() {
+  const form = getFormData();
+  // Validation: must have a printer and (weight or print time).
+  const hasWeight = parseFloat(form.weight_g||0) > 0;
+  const hasTime   = String(form.print_time||'').trim().length > 0;
+  if (!form.printer || (!hasWeight && !hasTime)) {
+    toast('Add a printer and a weight or print time before adding the part', 'error');
+    return;
+  }
+  const part = extractPart(form);
+  if (editingPartIndex !== null) {
+    partsBuffer[editingPartIndex] = part;
+    editingPartIndex = null;
+  } else {
+    partsBuffer.push(part);
+  }
+  clearPartFields();
+  renderPartsList();
+  calcQuote();
+}
+
+function editPart(i) {
+  const p = partsBuffer[i];
+  if (!p) return;
+  editingPartIndex = i;
+  // Load only the per-part fields into the form (keep quote-level fields intact).
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = (val ?? ''); };
+  set('q-printer', p.printer); set('q-filament', p.filament);
+  set('q-weight', p.weight_g||0); set('q-printtime', p.print_time);
+  set('q-complexity', p.complexity||1); set('q-quality', p.quality||'Standard');
+  set('q-qty', p.quantity||1); set('q-quoted', p.quoted_price||'');
+  set('q-rush', p.rush||'1.0'); set('q-notes', p.notes);
+  set('q-support-filament', p.support_filament||''); set('q-support-weight', p.support_weight_g||0);
+  set('q-prep-model', p.prep_model||0); set('q-prep-slice', p.prep_slice||0);
+  set('q-post-remove', p.post_remove!==undefined?p.post_remove:2);
+  set('q-post-support', p.post_support!==undefined?p.post_support:5);
+  set('q-post-extra', p.post_extra||0);
+  set('q-fin-sand', p.fin_sand||0); set('q-fin-paint', p.fin_paint||0);
+  set('q-fin-hardware', p.fin_hardware||0); set('q-fin-other', p.fin_other||0);
+  set('q-consumables', p.consumables||0);
+  renderPartsList();
+  calcQuote();
+}
+
+function removePart(i) {
+  partsBuffer.splice(i, 1);
+  if (editingPartIndex === i) editingPartIndex = null;
+  else if (editingPartIndex !== null && editingPartIndex > i) editingPartIndex--;
+  renderPartsList();
+  calcQuote();
+}
+
+// Clear only the per-part inputs (preserve customer/project/shipping/etc.).
+function clearPartFields() {
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+  set('q-weight', 0); set('q-printtime', ''); set('q-complexity', 1);
+  set('q-qty', 1); set('q-quoted', ''); set('q-rush', '1.0'); set('q-notes', '');
+  set('q-support-filament', ''); set('q-support-weight', 0);
+  set('q-prep-model', 0); set('q-prep-slice', 0);
+  set('q-post-remove', 2); set('q-post-support', 5); set('q-post-extra', 0);
+  set('q-fin-sand', 0); set('q-fin-paint', 0); set('q-fin-hardware', 0); set('q-fin-other', 0);
+  set('q-consumables', 0);
+  // printer/filament/quality keep their current selection for convenience.
+}
+
+function renderPartsList() {
+  const container = document.getElementById('parts-list-container');
+  if (!container) return;
+  const btn = document.getElementById('add-part-btn');
+  if (btn) btn.textContent = (editingPartIndex !== null) ? '✓ Update Part' : '＋ Add Part';
+  if (!partsBuffer.length) { container.innerHTML = ''; return; }
+  container.innerHTML = partsBuffer.map((p, i) => {
+    const c = calcFromQuoteData(p, { noFloor:true, noShipping:true, noCustom:true });
+    return `<div class="part-row ${editingPartIndex===i?'editing':''}">
+      <span class="part-row-name">${escapeHtml(partLabel(p, i))}</span>
+      <span class="part-row-meta">${escapeHtml(p.filament||'')} · ${p.weight_g||0}g · ×${p.quantity||1}</span>
+      <span class="part-row-price">${cur(c.suggested)}</span>
+      <button class="btn btn-ghost btn-sm" onclick="editPart(${i})">Edit</button>
+      <button class="btn btn-danger btn-sm" onclick="removePart(${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+
 function addPrinterRow() {
   state.settings.printers.push({name:'New Printer', price:500, life:3000, service:200, energy:0.15});
   renderSettings();
