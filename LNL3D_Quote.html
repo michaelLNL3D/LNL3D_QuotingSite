@@ -4422,6 +4422,42 @@ function removeDiscountRow(i) {
 /* ── Custom Line Items ───────────────────────────────────────── */
 let customItemsBuffer = [];
 
+/* ── Multi-Part Quotes ───────────────────────────────────────── */
+// Per-part fields: the subset of getFormData() that describes ONE printed part.
+// Everything NOT listed here (customer, project, description, date, expiry,
+// status, ship_pack, ship_cost, custom_items) is quote-level / shared.
+const PART_FIELDS = [
+  'printer','filament','weight_g','print_time','complexity','quality',
+  'quantity','quoted_price','support_filament','support_weight_g',
+  'prep_model','prep_slice','post_remove','post_support','post_extra',
+  'fin_sand','fin_paint','fin_hardware','fin_other','consumables',
+  'rush','notes','part_name'
+];
+
+let partsBuffer = [];        // array of part objects for the quote being edited
+let editingPartIndex = null; // null = adding new; number = editing that part in place
+
+// Pick only the per-part fields from a form/quote-shaped object.
+function extractPart(src) {
+  const p = {};
+  PART_FIELDS.forEach(k => { p[k] = src[k]; });
+  return p;
+}
+
+// Return the parts of a saved quote. Back-compat: a quote with no parts[]
+// is read as a single implicit part synthesized from its flat fields.
+function getQuoteParts(q) {
+  if (Array.isArray(q.parts) && q.parts.length) return q.parts;
+  return [extractPart(q)];
+}
+
+// Human label for a part in lists.
+function partLabel(p, i) {
+  return (p.part_name && p.part_name.trim())
+    ? p.part_name.trim()
+    : `Part ${i + 1}`;
+}
+
 function escapeHtml(str) {
   return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
