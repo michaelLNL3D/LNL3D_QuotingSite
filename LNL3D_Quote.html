@@ -241,6 +241,11 @@ input, select, textarea { font-family: var(--font-body); }
   align-items: center;
   margin-bottom: 6px;
 }
+.part-row { display:flex; align-items:center; gap:10px; padding:8px 10px; border:1px solid var(--border); border-radius:8px; margin-bottom:6px; background:var(--bg2); }
+.part-row .part-row-name { font-weight:600; flex:1; }
+.part-row .part-row-meta { color:var(--text3); font-size:12px; }
+.part-row .part-row-price { font-variant-numeric:tabular-nums; font-weight:600; }
+.part-row.editing { outline:2px solid var(--accent); }
 .form-checkbox {
   display: flex;
   align-items: center;
@@ -970,6 +975,13 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
           <input class="form-input" type="number" id="q-quoted" placeholder="Leave blank = suggested" min="0" step="0.01" oninput="calcQuote()">
           <span class="form-hint">Overrides suggested price</span>
         </div>
+      </div>
+
+      <div class="form-section">▣ Parts in this Quote</div>
+      <div id="parts-list-container"></div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button type="button" class="btn btn-secondary" id="add-part-btn" onclick="addPart()">＋ Add Part</button>
+        <span class="form-hint" id="parts-hint" style="align-self:center">Add the part above to this quote, then enter the next one.</span>
       </div>
 
       <div class="form-section">⊕ Secondary Material</div>
