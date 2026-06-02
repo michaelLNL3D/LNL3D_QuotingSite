@@ -2404,6 +2404,7 @@ function getFormData() {
     ship_cost:        document.getElementById('q-ship-cost').value,
     consumables:      document.getElementById('q-consumables').value,
     custom_items:     customItemsBuffer.map(x => ({...x})),
+    parts:            partsBuffer.map(x => ({...x})),
   };
 }
 
@@ -2427,6 +2428,9 @@ function setFormData(q) {
   set('q-consumables', q.consumables||0);
   customItemsBuffer = Array.isArray(q.custom_items) ? q.custom_items.map(x => ({...x})) : [];
   renderCustomItems();
+  partsBuffer = Array.isArray(q.parts) ? q.parts.map(x => ({...x})) : [];
+  editingPartIndex = null;
+  renderPartsList();
   calcQuote();
 }
 
@@ -2504,6 +2508,8 @@ function deleteTemplate(i) {
 
 function clearQuoteForm() {
   currentEditSerial = null;
+  partsBuffer = [];
+  editingPartIndex = null;
   document.getElementById('quote-page-title').textContent = 'New Quote';
   document.getElementById('quote-page-sub').textContent = 'Fill in the job details to generate a quote';
   const today = new Date().toISOString().slice(0,10);
