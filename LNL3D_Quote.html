@@ -2644,6 +2644,15 @@ function logQuote() {
 
   const c = calcFromQuoteData(q);
 
+  // Multi-part: mirror part 1's fields onto the flat quote for legacy readers,
+  // and record the count. (No-op for single-part quotes.)
+  if (Array.isArray(q.parts) && q.parts.length) {
+    Object.assign(q, extractPart(q.parts[0]));
+    q.part_count = q.parts.length;
+  } else {
+    q.part_count = 1;
+  }
+
   if (currentEditSerial !== null) {
     // Update flow
     const existing = state.quotes.find(x => x.serial === currentEditSerial);
