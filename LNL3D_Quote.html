@@ -2528,6 +2528,11 @@ function calcQuote() {
   const c = calcFromQuoteData(q);
   const s = state.settings;
 
+  // Multi-part: override the headline price/tax/total with the quote aggregate.
+  const agg = calcQuoteParts(q);
+  const isMulti = agg.multi;
+  const headline = isMulti ? agg.calc : c;
+
   // Update sidebar
   const setText = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
   setText('p-filament',    cur(c.filamentCost + c.suppCost));
@@ -2544,17 +2549,17 @@ function calcQuote() {
   setText('p-fail',        (c.fail*100).toFixed(1)+'%');
   setText('p-costpc',      cur(c.costPP));
   setText('p-markup',      c.markup.toFixed(2)+'×');
-  setText('p-suggested',   cur(c.suggested));
+  setText('p-suggested',   cur(headline.suggested));
   const taxRow = document.getElementById('p-tax-row');
   const totalTaxRow = document.getElementById('p-total-tax-row');
-  if (taxRow) taxRow.style.display = c.taxAmount > 0 ? '' : 'none';
-  if (totalTaxRow) totalTaxRow.style.display = c.taxAmount > 0 ? '' : 'none';
-  setText('p-tax',         `${(c.taxRate*100).toFixed(1)}% — ${cur(c.taxAmount)}`);
-  setText('p-total-tax',   cur(c.suggestedWithTax));
+  if (taxRow) taxRow.style.display = headline.taxAmount > 0 ? '' : 'none';
+  if (totalTaxRow) totalTaxRow.style.display = headline.taxAmount > 0 ? '' : 'none';
+  setText('p-tax',         `${(headline.taxRate*100).toFixed(1)}% — ${cur(headline.taxAmount)}`);
+  setText('p-total-tax',   cur(headline.suggestedWithTax));
 
   // Tax breakdown card
   const breakdownCard = document.getElementById('tax-breakdown-card');
-  if (breakdownCard) breakdownCard.style.display = c.taxAmount > 0 ? '' : 'none';
+  if (breakdownCard) breakdownCard.style.display = (!isMulti && c.taxAmount > 0) ? '' : 'none';
   const tb = c.taxBreakdown;
   if (tb) {
     // Taxable group: raw + price per category
@@ -2592,10 +2597,10 @@ function calcQuote() {
     toggle('b-nontax-custom-row',tb.nonTaxable.price.custom);
   }
 
-  setText('p-quoted',      c.quoted > 0 ? cur(c.quoted) : '—');
+  setText('p-quoted',      headline.quoted > 0 ? cur(headline.quoted) : '—');
   setText('p-profitpc',    cur(c.profitPP));
   setText('p-margin',      (c.margin*100).toFixed(1)+'%');
-  setText('p-totalprofit', cur(c.totalProfit));
+  setText('p-totalprofit', cur(headline.totalProfit));
 
   // Warning if quoted below cost
   const alertArea = document.getElementById('quote-alert-area');
