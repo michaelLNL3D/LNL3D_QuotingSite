@@ -3572,6 +3572,15 @@ const LOGO_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB9AAAAF3CAYAAAD9
 
 function renderPDFModal(q) {
   const c = calcFromQuoteData(q);
+  const _pdfParts = getQuoteParts(q);
+  const _pdfAgg = calcQuoteParts(q);
+  if (_pdfAgg.multi) {
+    // Headline totals reflect the whole quote; detail fields keep part-1 values.
+    c.suggested        = _pdfAgg.calc.suggested;
+    c.taxAmount        = _pdfAgg.calc.taxAmount;
+    c.suggestedWithTax = _pdfAgg.calc.suggestedWithTax;
+    c.taxableSubtotal  = _pdfAgg.calc.taxableSubtotal;
+  }
   const s = state.settings;
   const qp = parseFloat(q.quoted_price||0);
   const displayPrice = qp > 0 ? qp : c.suggested;
@@ -3710,6 +3719,24 @@ function renderPDFModal(q) {
         </div>`).join('')}
       </div>` : ''}
 
+      ${_pdfParts.length > 1 ? `
+      <table class="pdf-parts-table" style="width:100%;border-collapse:collapse;margin:10px 0">
+        <thead><tr>
+          <th style="text-align:left;border-bottom:1px solid #ccc;padding:4px">Part</th>
+          <th style="text-align:center;border-bottom:1px solid #ccc;padding:4px">Qty</th>
+          <th style="text-align:right;border-bottom:1px solid #ccc;padding:4px">Price</th>
+        </tr></thead>
+        <tbody>
+        ${_pdfParts.map((p, i) => {
+          const pc = calcFromQuoteData(p, { noFloor:true, noShipping:true, noCustom:true });
+          return `<tr>
+            <td style="padding:4px">${escapeHtml(partLabel(p, i))}</td>
+            <td style="text-align:center;padding:4px">${p.quantity||1}</td>
+            <td style="text-align:right;padding:4px">${cur(pc.suggested)}</td>
+          </tr>`;
+        }).join('')}
+        </tbody>
+      </table>` : ''}
       <div class="pdf-price-block" style="justify-content:flex-start;gap:40px">
         <div>
           <div class="pdf-price-block-label">${priceLabel}</div>
