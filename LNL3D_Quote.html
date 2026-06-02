@@ -2858,8 +2858,20 @@ function showQuickView(serial) {
   const q = state.quotes.find(x => x.serial === serial);
   if (!q) return;
   drawerSerial = serial;
-  const c = calcFromQuoteData(q);
+  const c = calcFromQuoteData(q);          // single-part shape (mirrored part 1) — drives detail rows
+  const agg = calcQuoteParts(q);
+  const isMulti = agg.multi;
+  const quoteParts = getQuoteParts(q);
   const cur2d = v => cur(v);
+  // Financials adapter: aggregate headline when multi, else the single-part calc.
+  const fin = isMulti
+    ? { costLabel:'Total Cost', cost:agg.calc.costTotal, suggested:agg.calc.suggested,
+        taxAmount:agg.calc.taxAmount, taxRate:agg.calc.taxRate, suggestedWithTax:agg.calc.suggestedWithTax,
+        margin: agg.calc.suggested>0 ? (agg.calc.suggested-agg.calc.costTotal)/agg.calc.suggested : 0,
+        totalProfit:agg.calc.totalProfit }
+    : { costLabel:'Cost / pc', cost:c.costPP, suggested:c.suggested,
+        taxAmount:c.taxAmount, taxRate:c.taxRate, suggestedWithTax:c.suggestedWithTax,
+        margin:c.margin, totalProfit:c.totalProfit };
   const qprice = parseFloat(q.quoted_price||0);
   const statusMap = {Quoting:'quoting',Accepted:'accepted','In Progress':'progress',Complete:'complete',Declined:'declined'};
 
@@ -2896,15 +2908,15 @@ function showQuickView(serial) {
   document.getElementById('drawer-body').innerHTML = `
     <div class="drawer-section">
       <div class="drawer-section-label">Financials</div>
-      ${row('Cost / pc', cur2d(c.costPP))}
-      ${row('Suggested', cur2d(c.suggested), 'green')}
-      ${c.taxAmount > 0 ? row(`Tax (${(c.taxRate*100).toFixed(1)}%)`, cur2d(c.taxAmount)) : ''}
-      ${c.taxAmount > 0 ? row('Total w/ Tax', cur2d(c.suggestedWithTax), 'green') : ''}
+      ${row(fin.costLabel, cur2d(fin.cost))}
+      ${row('Suggested', cur2d(fin.suggested), 'green')}
+      ${fin.taxAmount > 0 ? row(`Tax (${(fin.taxRate*100).toFixed(1)}%)`, cur2d(fin.taxAmount)) : ''}
+      ${fin.taxAmount > 0 ? row('Total w/ Tax', cur2d(fin.suggestedWithTax), 'green') : ''}
       ${row('Quoted Price', qprice > 0 ? cur2d(qprice) : '—', qprice > 0 ? 'orange' : '')}
-      ${row('Margin', (c.margin*100).toFixed(1)+'%')}
-      ${row('Profit', cur2d(c.totalProfit), c.totalProfit >= 0 ? 'green' : 'red')}
+      ${row('Margin', (fin.margin*100).toFixed(1)+'%')}
+      ${row('Profit', cur2d(fin.totalProfit), fin.totalProfit >= 0 ? 'green' : 'red')}
     </div>
-    ${c.taxAmount > 0 && c.taxBreakdown ? `
+    ${!isMulti && c.taxAmount > 0 && c.taxBreakdown ? `
     <div class="drawer-section">
       <div class="drawer-section-label">Customer Charges (Tax Summary)</div>
       <div style="display:grid;grid-template-columns:1fr auto auto;gap:12px;padding:2px 0;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">
@@ -2924,6 +2936,18 @@ function showQuickView(serial) {
       ${row(`Tax (${(c.taxRate*100).toFixed(1)}%)`, cur2d(c.taxBreakdown.tax))}
       ${row('Grand Total', cur2d(c.taxBreakdown.grandTotal), 'green')}
     </div>` : ''}
+    ${isMulti ? `
+    <div class="drawer-section">
+      <div class="drawer-section-label">Parts (${quoteParts.length})</div>
+      ${quoteParts.map((p, i) => {
+        const pc = calcFromQuoteData(p, { noFloor:true, noShipping:true, noCustom:true });
+        return `<div class="part-row">
+          <span class="part-row-name">${escapeHtml(partLabel(p, i))}</span>
+          <span class="part-row-meta">${escapeHtml(p.filament||'')} · ${p.weight_g||0}g · ×${p.quantity||1}</span>
+          <span class="part-row-price">${cur(pc.suggested)}</span>
+        </div>`;
+      }).join('')}
+    </div>` : `
     <div class="drawer-section">
       <div class="drawer-section-label">Print Details</div>
       ${row('Printer', q.printer||'—')}
@@ -2943,7 +2967,7 @@ function showQuickView(serial) {
       ${row('Job Removal', (q.post_remove||0)+'min')}
       ${row('Support Removal', (q.post_support||0)+'min')}
       ${row('Extra Post-Work', (q.post_extra||0)+'min')}
-    </div>
+    </div>`}
     ${(parseFloat(q.fin_sand||0)+parseFloat(q.fin_paint||0)+parseFloat(q.fin_hardware||0)+parseFloat(q.fin_other||0)) > 0 ? `
     <div class="drawer-section">
       <div class="drawer-section-label">Finishing</div>
