@@ -2217,6 +2217,67 @@ function calcFromQuoteData(q, opts = {}) {
   };
 }
 
+// Aggregate a multi-part quote. Returns a unified result object whose
+// top-level price fields mirror calcFromQuoteData's shape so existing
+// renderers can read .suggested / .taxAmount / .suggestedWithTax.
+//
+// quoteObj must carry quote-level fields (ship_pack, ship_cost, custom_items)
+// and either a parts[] array or flat per-part fields (back-compat).
+function calcQuoteParts(quoteObj) {
+  const s = state.settings;
+  const parts = getQuoteParts(quoteObj);
+
+  // Single (or implicit single) part → exact existing behavior, untouched.
+  if (parts.length < 2) {
+    const merged = { ...quoteObj, ...parts[0] };   // part fields + quote-level fields
+    const c = calcFromQuoteData(merged);
+    return { multi: false, parts: [{ part: parts[0], calc: c, price: c.suggested }], calc: c };
+  }
+
+  // Multi-part: price each part with floor/shipping/custom suppressed.
+  const perPart = parts.map((p, i) => {
+    const c = calcFromQuoteData(p, { noFloor: true, noShipping: true, noCustom: true });
+    return { part: p, index: i, calc: c, price: c.suggested };
+  });
+
+  const sumSuggested      = perPart.reduce((a, x) => a + x.calc.suggested, 0);
+  const sumTaxableSubtotal= perPart.reduce((a, x) => a + x.calc.taxBreakdown.taxable.price.subtotal, 0);
+  const sumCostTotal      = perPart.reduce((a, x) => a + x.calc.costTotal, 0);
+
+  // Quote-level shipping + custom items, added at FACE VALUE (markup ×1.0).
+  const shipping    = parseFloat(quoteObj.ship_pack||0) + parseFloat(quoteObj.ship_cost||0);
+  const customItems = Array.isArray(quoteObj.custom_items) ? quoteObj.custom_items : [];
+  const customTotal   = customItems.reduce((a, it) => a + parseFloat(it.amount||0), 0);
+  const customTaxable = customItems.reduce((a, it) => a + (it.taxable ? parseFloat(it.amount||0) : 0), 0);
+
+  const taxRate     = parseFloat(s.tax_rate || 0);
+  const shipTaxable = !!s.ship_taxable;
+
+  // Floor applied ONCE at the quote level.
+  const preTaxRaw = sumSuggested + shipping + customTotal;
+  const suggested = Math.max(preTaxRaw, s.min_fee);
+
+  // Tax base: per-part taxable subtotals + taxable shipping + taxable custom.
+  const taxableSubtotal = sumTaxableSubtotal + (shipTaxable ? shipping : 0) + customTaxable;
+  const taxAmount       = taxableSubtotal * taxRate;
+  const suggestedWithTax= suggested + taxAmount;
+
+  const quotedRaw = parseFloat(quoteObj.quoted_price || 0);
+  const quoted    = quotedRaw > 0 ? quotedRaw : 0;
+  const costTotal = sumCostTotal + shipping + customTotal;
+  const totalProfit = (quoted > 0 ? quoted : suggested) - costTotal;
+
+  return {
+    multi: true,
+    parts: perPart,
+    calc: {
+      suggested, taxRate, taxAmount, taxableSubtotal, suggestedWithTax,
+      quoted, costTotal, totalProfit,
+      shipping, customTotal, customTaxable,
+    }
+  };
+}
+
 /* ═══════════════════════════════════════════════════════════════
    HELPERS
 ═══════════════════════════════════════════════════════════════ */
