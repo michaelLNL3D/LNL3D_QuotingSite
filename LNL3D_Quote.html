@@ -979,9 +979,9 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 
       <div class="form-section">▣ Parts in this Quote</div>
       <div id="parts-list-container"></div>
-      <div style="display:flex;gap:8px;margin-top:8px">
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+        <input class="form-input" type="text" id="q-part-name" placeholder="Part name (optional, e.g. Base plate)" style="flex:1;max-width:280px">
         <button type="button" class="btn btn-secondary" id="add-part-btn" onclick="addPart()">＋ Add Part</button>
-        <span class="form-hint" id="parts-hint" style="align-self:center">Add the part above to this quote, then enter the next one.</span>
       </div>
 
       <div class="form-section">⊕ Secondary Material</div>
@@ -2403,6 +2403,7 @@ function getFormData() {
     ship_pack:        document.getElementById('q-ship-pack').value,
     ship_cost:        document.getElementById('q-ship-cost').value,
     consumables:      document.getElementById('q-consumables').value,
+    part_name:        (document.getElementById('q-part-name')?.value || '').trim(),
     custom_items:     customItemsBuffer.map(x => ({...x})),
     parts:            partsBuffer.map(x => ({...x})),
   };
@@ -4688,7 +4689,7 @@ function editPart(i) {
   set('q-weight', p.weight_g||0); set('q-printtime', p.print_time);
   set('q-complexity', p.complexity||1); set('q-quality', p.quality||'Standard');
   set('q-qty', p.quantity||1); set('q-quoted', p.quoted_price||'');
-  set('q-rush', p.rush||'1.0'); set('q-notes', p.notes);
+  set('q-rush', p.rush||'1.0'); set('q-notes', p.notes); set('q-part-name', p.part_name||'');
   set('q-support-filament', p.support_filament||''); set('q-support-weight', p.support_weight_g||0);
   set('q-prep-model', p.prep_model||0); set('q-prep-slice', p.prep_slice||0);
   set('q-post-remove', p.post_remove!==undefined?p.post_remove:2);
@@ -4713,7 +4714,7 @@ function removePart(i) {
 function clearPartFields() {
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
   set('q-weight', 0); set('q-printtime', ''); set('q-complexity', 1);
-  set('q-qty', 1); set('q-quoted', ''); set('q-rush', '1.0'); set('q-notes', '');
+  set('q-qty', 1); set('q-quoted', ''); set('q-rush', '1.0'); set('q-notes', ''); set('q-part-name', '');
   set('q-support-filament', ''); set('q-support-weight', 0);
   set('q-prep-model', 0); set('q-prep-slice', 0);
   set('q-post-remove', 2); set('q-post-support', 5); set('q-post-extra', 0);
