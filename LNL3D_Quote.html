@@ -2810,16 +2810,21 @@ function reloadQuote(serial) {
 
 function exportCSV() {
   const cols = ['serial','date','expiry','customer','description','status','quantity','filament','weight_g','print_time','printer','quoted_price','notes'];
-  const headers = ['#','Date','Expiry','Customer','Description','Status','Qty','Filament','Weight (g)','Print Time','Printer','Quoted Price','Notes','Tax Rate (%)','Taxable Sales','Non-Taxable Sales','Tax Amount','Total w/ Tax'];
+  const headers = ['#','Date','Expiry','Customer','Description','Status','Qty','Filament','Weight (g)','Print Time','Printer','Quoted Price','Notes','Parts','Tax Rate (%)','Taxable Sales','Non-Taxable Sales','Tax Amount','Total w/ Tax'];
   const escape = v => `"${String(v??'').replace(/"/g,'""')}"`;
   const rows = [...state.quotes].sort((a,b)=>(a.serial||0)-(b.serial||0)).map(q => {
-    const calc = calcFromQuoteData(q);
+    const agg = calcQuoteParts(q);
+    const calc = agg.multi ? agg.calc : calcFromQuoteData(q);
+    const partCount = getQuoteParts(q).length;
     const taxRatePct     = ((state.settings.tax_rate||0)*100).toFixed(2);
-    const taxableSales    = calc.taxBreakdown ? calc.taxBreakdown.taxable.price.subtotal.toFixed(2)    : '0.00';
-    const nonTaxableSales = calc.taxBreakdown ? calc.taxBreakdown.nonTaxable.price.subtotal.toFixed(2) : '0.00';
+    // taxBreakdown exists only on the single-part calc shape; for multi-part use aggregate fields.
+    const taxableSales    = agg.multi ? agg.calc.taxableSubtotal.toFixed(2)
+                                      : (calc.taxBreakdown ? calc.taxBreakdown.taxable.price.subtotal.toFixed(2) : '0.00');
+    const nonTaxableSales = agg.multi ? (agg.calc.suggested - agg.calc.taxableSubtotal).toFixed(2)
+                                      : (calc.taxBreakdown ? calc.taxBreakdown.nonTaxable.price.subtotal.toFixed(2) : '0.00');
     const taxAmt          = calc.taxAmount.toFixed(2);
     const totalWithTax    = calc.suggestedWithTax.toFixed(2);
-    return [...cols.map(c => escape(q[c]??'')), escape(taxRatePct), escape(taxableSales), escape(nonTaxableSales), escape(taxAmt), escape(totalWithTax)].join(',');
+    return [...cols.map(c => escape(q[c]??'')), escape(partCount), escape(taxRatePct), escape(taxableSales), escape(nonTaxableSales), escape(taxAmt), escape(totalWithTax)].join(',');
   });
   const csv = [headers.map(escape).join(','), ...rows].join('\n');
   const a = document.createElement('a');
