@@ -232,6 +232,10 @@ input, select, textarea { font-family: var(--font-body); }
   display: flex; align-items: center; gap: 8px;
 }
 .form-section:first-child { margin-top: 0; }
+details.form-details > summary.form-section { cursor:pointer; list-style:none; user-select:none; }
+details.form-details > summary.form-section::-webkit-details-marker { display:none; }
+details.form-details > summary.form-section::before { content:'▸'; font-size:11px; transition:transform .15s; }
+details.form-details[open] > summary.form-section::before { transform:rotate(90deg); }
 
 /* Custom Line Items */
 .form-row-custom-item {
@@ -866,6 +870,11 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 
   <div id="quote-alert-area"></div>
 
+  <div id="parts-top-wrap" class="card" style="display:none;padding:14px 18px;margin-bottom:16px">
+    <div class="form-section" style="margin-top:0">▣ Parts in this Quote</div>
+    <div id="parts-list-container"></div>
+  </div>
+
   <div class="quote-layout">
     <!-- Left: form -->
     <div class="quote-form card" style="gap:0;padding:24px">
@@ -977,75 +986,85 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
         </div>
       </div>
 
-      <div class="form-section">▣ Parts in this Quote</div>
-      <div id="parts-list-container"></div>
-      <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+      <details class="form-details">
+        <summary class="form-section">⊕ Additional Part Details — support, labor, finishing (optional, per part)</summary>
+
+        <div class="form-section" style="margin-top:8px">⊕ Secondary Material</div>
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label class="form-label">Support Filament (optional)</label>
+            <select class="form-select" id="q-support-filament" onchange="calcQuote()">
+              <option value="">None</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Support Weight (g)</label>
+            <input class="form-input" type="number" id="q-support-weight" value="0" min="0" step="0.01" oninput="calcQuote()">
+          </div>
+        </div>
+
+        <div class="form-section">⊞ Labor</div>
+        <div class="form-row form-row-3">
+          <div class="form-group">
+            <label class="form-label">Model Prep (min)</label>
+            <input class="form-input" type="number" id="q-prep-model" value="0" min="0" oninput="calcQuote()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Slicing (min)</label>
+            <input class="form-input" type="number" id="q-prep-slice" value="0" min="0" oninput="calcQuote()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Job Removal (min)</label>
+            <input class="form-input" type="number" id="q-post-remove" value="2" min="0" oninput="calcQuote()">
+          </div>
+        </div>
+        <div class="form-row form-row-2" style="margin-top:12px">
+          <div class="form-group">
+            <label class="form-label">Support Removal (min)</label>
+            <input class="form-input" type="number" id="q-post-support" value="5" min="0" oninput="calcQuote()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Additional Post Work (min)</label>
+            <input class="form-input" type="number" id="q-post-extra" value="0" min="0" oninput="calcQuote()">
+          </div>
+        </div>
+
+        <div class="form-section">✦ Finishing Materials</div>
+        <div class="form-row form-row-4">
+          <div class="form-group">
+            <label class="form-label">Sanding ($)</label>
+            <input class="form-input" type="number" id="q-fin-sand" value="0" min="0" step="0.01" oninput="calcQuote()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Primer/Paint ($)</label>
+            <input class="form-input" type="number" id="q-fin-paint" value="0" min="0" step="0.01" oninput="calcQuote()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hardware Inserts ($)</label>
+            <input class="form-input" type="number" id="q-fin-hardware" value="0" min="0" step="0.01" oninput="calcQuote()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Other Finishing ($)</label>
+            <input class="form-input" type="number" id="q-fin-other" value="0" min="0" step="0.01" oninput="calcQuote()">
+          </div>
+        </div>
+
+        <div class="form-section">◈ Consumables</div>
+        <div class="form-row form-row-3">
+          <div class="form-group">
+            <label class="form-label">Consumables ($)</label>
+            <input class="form-input" type="number" id="q-consumables" value="0" min="0" step="0.01" oninput="calcQuote()">
+          </div>
+        </div>
+      </details>
+
+      <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
         <input class="form-input" type="text" id="q-part-name" placeholder="Part name (optional, e.g. Base plate)" style="flex:1;max-width:280px">
         <button type="button" class="btn btn-secondary" id="add-part-btn" onclick="addPart()">＋ Add Part</button>
       </div>
 
-      <div class="form-section">⊕ Secondary Material</div>
+      <div class="form-section">◎ Shipping (whole order)</div>
       <div class="form-row form-row-2">
-        <div class="form-group">
-          <label class="form-label">Support Filament (optional)</label>
-          <select class="form-select" id="q-support-filament" onchange="calcQuote()">
-            <option value="">None</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Support Weight (g)</label>
-          <input class="form-input" type="number" id="q-support-weight" value="0" min="0" step="0.01" oninput="calcQuote()">
-        </div>
-      </div>
-
-      <div class="form-section">⊞ Labor</div>
-      <div class="form-row form-row-3">
-        <div class="form-group">
-          <label class="form-label">Model Prep (min)</label>
-          <input class="form-input" type="number" id="q-prep-model" value="0" min="0" oninput="calcQuote()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Slicing (min)</label>
-          <input class="form-input" type="number" id="q-prep-slice" value="0" min="0" oninput="calcQuote()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Job Removal (min)</label>
-          <input class="form-input" type="number" id="q-post-remove" value="2" min="0" oninput="calcQuote()">
-        </div>
-      </div>
-      <div class="form-row form-row-2" style="margin-top:12px">
-        <div class="form-group">
-          <label class="form-label">Support Removal (min)</label>
-          <input class="form-input" type="number" id="q-post-support" value="5" min="0" oninput="calcQuote()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Additional Post Work (min)</label>
-          <input class="form-input" type="number" id="q-post-extra" value="0" min="0" oninput="calcQuote()">
-        </div>
-      </div>
-
-      <div class="form-section">✦ Finishing Materials</div>
-      <div class="form-row form-row-4">
-        <div class="form-group">
-          <label class="form-label">Sanding ($)</label>
-          <input class="form-input" type="number" id="q-fin-sand" value="0" min="0" step="0.01" oninput="calcQuote()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Primer/Paint ($)</label>
-          <input class="form-input" type="number" id="q-fin-paint" value="0" min="0" step="0.01" oninput="calcQuote()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Hardware Inserts ($)</label>
-          <input class="form-input" type="number" id="q-fin-hardware" value="0" min="0" step="0.01" oninput="calcQuote()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Other Finishing ($)</label>
-          <input class="form-input" type="number" id="q-fin-other" value="0" min="0" step="0.01" oninput="calcQuote()">
-        </div>
-      </div>
-
-      <div class="form-section">◎ Shipping & Misc</div>
-      <div class="form-row form-row-3">
         <div class="form-group">
           <label class="form-label">Packaging ($)</label>
           <input class="form-input" type="number" id="q-ship-pack" value="0" min="0" step="0.01" oninput="calcQuote()">
@@ -1053,10 +1072,6 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
         <div class="form-group">
           <label class="form-label">Shipping ($)</label>
           <input class="form-input" type="number" id="q-ship-cost" value="0" min="0" step="0.01" oninput="calcQuote()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Consumables ($)</label>
-          <input class="form-input" type="number" id="q-consumables" value="0" min="0" step="0.01" oninput="calcQuote()">
         </div>
       </div>
 
@@ -4726,9 +4741,11 @@ function clearPartFields() {
 function renderPartsList() {
   const container = document.getElementById('parts-list-container');
   if (!container) return;
+  const wrap = document.getElementById('parts-top-wrap');
   const btn = document.getElementById('add-part-btn');
   if (btn) btn.textContent = (editingPartIndex !== null) ? '✓ Update Part' : '＋ Add Part';
-  if (!partsBuffer.length) { container.innerHTML = ''; return; }
+  if (!partsBuffer.length) { container.innerHTML = ''; if (wrap) wrap.style.display = 'none'; return; }
+  if (wrap) wrap.style.display = '';
   container.innerHTML = partsBuffer.map((p, i) => {
     const c = calcFromQuoteData(p, { noFloor:true, noShipping:true, noCustom:true });
     return `<div class="part-row ${editingPartIndex===i?'editing':''}">
