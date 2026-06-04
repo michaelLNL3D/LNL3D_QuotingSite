@@ -4149,6 +4149,13 @@ function copyEmailQuote() {
   const q = window._currentPDFQuote || getFormData();
   const s = state.settings;
   const c = calcFromQuoteData(q);
+  const _emailParts = getQuoteParts(q);
+  const _emailAgg = calcQuoteParts(q);
+  if (_emailAgg.multi) {
+    c.suggested        = _emailAgg.calc.suggested;
+    c.taxAmount        = _emailAgg.calc.taxAmount;
+    c.suggestedWithTax = _emailAgg.calc.suggestedWithTax;
+  }
   const qp = parseFloat(q.quoted_price || 0);
   const price = qp > 0 ? qp : c.suggested;
   const ppu = price / Math.max(parseInt(q.quantity || 1), 1);
@@ -4196,6 +4203,14 @@ function copyEmailQuote() {
     ].filter(Boolean).join('\n'),
     ``,
     divider,
+    ...(_emailParts.length > 1 ? [
+      `PARTS`,
+      ..._emailParts.map((p, i) => {
+        const pc = calcFromQuoteData(p, { noFloor:true, noShipping:true, noCustom:true });
+        return `  ${partLabel(p, i)} (×${p.quantity||1}): ${cur(pc.suggested)}`;
+      }),
+      ``,
+    ] : []),
     ...(c.customItems && c.customItems.filter(it => it.show_on_pdf).length > 0 ? [
       `LINE ITEMS`,
       ...c.customItems.filter(it => it.show_on_pdf).map(it => `  ${it.name||'Item'}: ${cur(it.amount)}`),
