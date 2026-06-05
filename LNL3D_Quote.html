@@ -493,7 +493,7 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
 .pdf-modal .modal { min-width: 700px; max-width: 740px; background: #ffffff !important; color: #111827 !important; padding: 0 !important; border-radius: 4px; overflow-y: auto; }
 .pdf-doc { font-family: 'DM Sans', sans-serif; color: #111827 !important; background: #ffffff !important; }
 .pdf-doc * { color: inherit !important; }
-.pdf-modal .modal-footer { background: var(--bg2) !important; color: var(--text) !important; }
+.pdf-modal .modal-footer { background: var(--bg2) !important; color: var(--text) !important; position: sticky; bottom: 0; z-index: 5; margin-top: 0 !important; }
 .pdf-modal .modal-footer .btn { color: var(--text) !important; }
 .pdf-modal .modal-footer .btn-primary { color: #fff !important; }
 
@@ -3931,10 +3931,12 @@ function getPdfPageToggles() {
 function onPdfToggleChange() {
   const q = window._currentPDFQuote || (typeof getFormData === 'function' ? getFormData() : null);
   if (!q) return;
-  renderPDFModal(q);
-  // Restore scroll to top so customers see the quote summary first
+  // Preserve scroll position across the re-render so the (now sticky) options
+  // bar and the user's place in the document don't jump on every toggle.
   const modal = document.querySelector('#modal-pdf .modal');
-  if (modal) modal.scrollTop = 0;
+  const prevScroll = modal ? modal.scrollTop : 0;
+  renderPDFModal(q);
+  if (modal) modal.scrollTop = prevScroll;
 }
 
 const MAT_INFO = {
