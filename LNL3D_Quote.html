@@ -1525,22 +1525,22 @@ tbody td { padding: 10px 14px; color: var(--text); vertical-align: middle; }
           <input type="checkbox" id="pdf-toggle-simple" checked onchange="onPdfToggleChange()"> Simplified first page
         </label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none">
-          <input type="checkbox" id="pdf-toggle-pricing" checked onchange="onPdfToggleChange()"> Pricing &amp; Material Details
+          <input type="checkbox" id="pdf-toggle-pricing" onchange="onPdfToggleChange()"> Pricing &amp; Material Details
         </label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none">
-          <input type="checkbox" id="pdf-toggle-process" checked onchange="onPdfToggleChange()"> Process &amp; Lead Times
+          <input type="checkbox" id="pdf-toggle-process" onchange="onPdfToggleChange()"> Process &amp; Lead Times
         </label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none">
-          <input type="checkbox" id="pdf-toggle-postprocess" checked onchange="onPdfToggleChange()"> Post-Processing Menu
+          <input type="checkbox" id="pdf-toggle-postprocess" onchange="onPdfToggleChange()"> Post-Processing Menu
         </label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none">
-          <input type="checkbox" id="pdf-toggle-materials" checked onchange="onPdfToggleChange()"> Material Guide
+          <input type="checkbox" id="pdf-toggle-materials" onchange="onPdfToggleChange()"> Material Guide
         </label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none">
-          <input type="checkbox" id="pdf-toggle-faq" checked onchange="onPdfToggleChange()"> FAQ
+          <input type="checkbox" id="pdf-toggle-faq" onchange="onPdfToggleChange()"> FAQ
         </label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none">
-          <input type="checkbox" id="pdf-toggle-quality" checked onchange="onPdfToggleChange()"> Quality Guide
+          <input type="checkbox" id="pdf-toggle-quality" onchange="onPdfToggleChange()"> Quality Guide
         </label>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center">
@@ -2916,11 +2916,9 @@ function deleteQuote(serial) {
 function showLogPDF(serial) {
   const q = state.quotes.find(x => x.serial === serial);
   if (!q) return;
-  // Reset optional-page toggles to "all on" — same behaviour as showCustomerPDF
-  ['pdf-toggle-simple','pdf-toggle-pricing','pdf-toggle-process','pdf-toggle-postprocess','pdf-toggle-materials','pdf-toggle-faq'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.checked = true;
-  });
+  // Reset toggles each open: default is the simplified single page — only
+  // "Simplified first page" on, every optional add-on page off.
+  resetPdfToggles();
   renderPDFModal(q);
   openModal('modal-pdf');
 }
@@ -3634,12 +3632,9 @@ function renderDashboard() {
 ═══════════════════════════════════════════════════════════════ */
 function showCustomerPDF() {
   const q = getFormData();
-  // Reset the optional-page checkboxes to "all on" each open so behaviour is
-  // predictable per-quote — last quote's mix doesn't bleed into this one.
-  ['pdf-toggle-simple','pdf-toggle-pricing','pdf-toggle-process','pdf-toggle-postprocess','pdf-toggle-materials','pdf-toggle-faq'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.checked = true;
-  });
+  // Reset toggles each open so the last quote's mix doesn't bleed into this one.
+  // Default = simplified single page: only "Simplified first page" on, add-ons off.
+  resetPdfToggles();
   renderPDFModal(q);
   openModal('modal-pdf');
 }
@@ -3899,6 +3894,16 @@ function renderPDFModal(q) {
   ${_faqHtml}
   ${_qualityHtml}
   `;
+}
+
+/* Reset the PDF page-mix checkboxes to the default each time the modal opens:
+   simplified single page only — "Simplified first page" on, all add-on pages off. */
+function resetPdfToggles() {
+  const on  = ['pdf-toggle-simple'];
+  const off = ['pdf-toggle-pricing','pdf-toggle-process','pdf-toggle-postprocess',
+               'pdf-toggle-materials','pdf-toggle-faq','pdf-toggle-quality'];
+  on.forEach(id  => { const el = document.getElementById(id); if (el) el.checked = true;  });
+  off.forEach(id => { const el = document.getElementById(id); if (el) el.checked = false; });
 }
 
 /* Read on/off state for the three optional pages from the PDF preview modal
